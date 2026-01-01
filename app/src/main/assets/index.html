@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SkyChat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+    <div class="login-box">
+        <h1>SkyChat</h1>
+        <input type="text" id="username-input" placeholder="Numele sau porecla:" autocomplete="off">
+        <button onclick="login()">Conectare</button>
+    </div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-screen" class="hidden">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-title">
+            <div class="status-indicator" id="status-dot"></div>
+            <span id="online-count" class="online-count">0 online</span>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="messages-list"></div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+        <input type="text" id="msg-input" placeholder="Scrie un mesaj...">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
