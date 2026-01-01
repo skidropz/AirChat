@@ -46,9 +46,5 @@ Made with ❤️ by SkiDropz
 
 ## Screenshots
 
-### Ecranul de pornire și Login
-![Ecranul de pornire](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg)
-
-### Conversație
-![Conversație](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg)
-
+<img src="[screenshots/homepage.png](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg)" alt="Login" width="400">
+<img src="[screenshots/login.png](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg)" alt="Chat" width="400">
