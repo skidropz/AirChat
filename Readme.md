@@ -43,3 +43,12 @@ Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi
 *   **Network Utils:** Detectare inteligentă a IP-ului pe interfețele de rețea.
 ---
 Made with ❤️ by SkiDropz
+
+## Screenshots
+
+### Ecranul de pornire și Login
+![Ecranul de pornire](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg)
+
+### Conversație
+![Conversație](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg)
+
