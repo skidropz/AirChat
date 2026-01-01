@@ -2,17 +2,19 @@
 
 Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi-Fi extern (ex: în avion, buncăre, drumeții pe munte sau pene de curent).
 
-## Screenshots
-
-<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg" alt="Login" width="400">
-<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg" alt="Chat" width="400">
-
 ## 🌟 De ce SkyChat?
 
 *   ⛔ Funcționează 100% în Airplane Mode (cu Wi-Fi activat).
 *   🍎 Prietenii tăi (cu iPhone, Laptop sau alt Android) **NU** trebuie să instaleze nicio aplicație. Ei folosesc doar browserul (Safari/Chrome).
 *   ⚡ Folosește WebSockets pentru o comunicare rapidă, în timp real.
 *   🔒 Datele nu părăsesc niciodată rețeaua locală creată de telefoane. Nu există cloud, nu există tracking.
+
+## Screenshots
+
+<p float="left">
+<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg" alt="Login" width="400">
+<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg" alt="Chat" width="400">
+</p>
 
 ## 📱 Ghid de Utilizare
 
