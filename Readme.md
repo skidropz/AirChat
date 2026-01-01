@@ -2,6 +2,11 @@
 
 Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi-Fi extern (ex: în avion, buncăre, drumeții pe munte sau pene de curent).
 
+## Screenshots
+
+<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg" alt="Login" width="400">
+<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg" alt="Chat" width="400">
+
 ## 🌟 De ce SkyChat?
 
 *   ⛔ Funcționează 100% în Airplane Mode (cu Wi-Fi activat).
@@ -44,7 +49,3 @@ Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi
 ---
 Made with ❤️ by SkiDropz
 
-## Screenshots
-
-<img src="[screenshots/homepage.png](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg)" alt="Login" width="400">
-<img src="[screenshots/login.png](https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg)" alt="Chat" width="400">
