@@ -43,6 +43,13 @@ Aplicația folosește o arhitectură ingenioasă de tip **Server Embedded pe Mob
 ### Pasul 3: Chat!
 *   Scrie mesaje. Ele vor apărea instantaneu pe toate dispozitivele conectate.
 
+### Pentru compilare:
+
+1.   Importă Proiectul: Mergi la File -> New -> Project from Version Control... și lipește link-ul de GitHub.
+2.   Sincronizează Gradle: Așteaptă ca bara de progres de jos ("Gradle Build") să se termine. Dacă apar erori, apasă pe link-urile albastre de instalare care apar în consolă.
+3.   Compilează (Build): Mergi în meniul de sus la Build -> Build Bundle(s) / APK(s) -> Build APK(s).
+4.   Localizează fișierul: Când apare notificarea în colțul din dreapta jos, apasă pe locate. Vei găsi fișierul app-debug.apk gata de instalat pe telefon.
+
 ## 🛠️ Tech Stack
 
 *   **Android (Native):** Kotlin
