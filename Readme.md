@@ -1,8 +1,8 @@
-**SkyChat** este o aplicație de comunicare peer-to-peer care funcționează **fără internet**, transformând un telefon Android într-un server local de chat.
+**AirChat** este o aplicație de comunicare peer-to-peer care funcționează **fără internet**, transformând un telefon Android într-un server local de chat.
 
 Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi-Fi extern (ex: în avion, buncăre, drumeții pe munte sau pene de curent).
 
-## 🌟 De ce SkyChat?
+## 🌟 De ce AirChat?
 
 *   ⛔ Funcționează 100% în Airplane Mode cu WiFi + Hotspot activat.
 *   🍎 Prietenii tăi (cu iPhone, Laptop sau alt Android) **NU** trebuie să instaleze nicio aplicație. Ei folosesc doar browserul (Safari/Chrome).
@@ -20,12 +20,12 @@ Este soluția perfectă pentru situațiile în care nu există semnal GSM sau Wi
 
 ### Pasul 1: Pregătirea Serverului (Android)
 
-1.  Instalează APK-ul `SkyChat` pe telefon. Click [aici](https://github.com/skidropz/SkyChat/releases/download/Release/SkyChat_v1.0.apk) ca să descarci versiunea compilată.
+1.  Instalează APK-ul `AirChat` pe telefon. Click [aici](https://github.com/skidropz/SkyChat/releases/download/Release/SkyChat_v1.0.apk) ca să descarci versiunea compilată.
 2.  Oprește datele mobile și activează **hotspot-ul Wi-Fi**.
 3.  Deschide aplicația. Vei vedea un mesaj de genul și un cod QR în dreapta:
-    > "Server pornit la http://192.168.43.1:8080"
+    > "👉 http://192.168.43.1:8080"
 
-### Pasul 2: Conectarea Clientului (iPhone / alt device)
+### Pasul 2: Conectarea altor dispozitive (iPhone / alt device)
 
 1.  Conectează-te la hotspot-ul telefonului.
 2.  Deschide orice browser (Safari, Chrome) sau camera și scanează codul QR.
