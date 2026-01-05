@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SkyChat</title>
+    <title>AirChat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,11 +12,25 @@
 <!-- LOGIN -->
 <div id="login-screen">
     <div class="login-box">
-        <h1>SkyChat</h1>
-        <input type="text" id="username-input" placeholder="Numele sau porecla:" autocomplete="off">
+        <h1>AirChat</h1>
+        <input type="text" id="username-input" placeholder="Scrie aici numele tău" autocomplete="off">
         <button onclick="login()">Conectare</button>
     </div>
+
+    <div class="color-picker-label">
+        Alege culoarea pentru mesajele tale:
+    </div>
+
+    <div class="color-picker">
+        <div class="color-option blue selected" data-color="blue"></div>
+        <div class="color-option red" data-color="red"></div>
+        <div class="color-option green" data-color="green"></div>
+        <div class="color-option purple" data-color="purple"></div>
+        <div class="color-option orange" data-color="orange"></div>
+        <div class="color-option white" data-color="white"></div>
+    </div>
 </div>
+
 
 <!-- CHAT -->
 <div id="chat-screen" class="hidden">

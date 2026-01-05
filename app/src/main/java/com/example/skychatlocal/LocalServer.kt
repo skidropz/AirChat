@@ -6,11 +6,16 @@ import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoWSD
 import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
+import java.security.KeyStore
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
 
 class LocalServer(private val context: Context, port: Int) : NanoWSD(port) {
 
     private val connections = CopyOnWriteArrayList<WebSocket>()
     private val TAG = "SkyChatServer"
+
+
 
     override fun serveHttp(session: IHTTPSession): Response {
         var uri = session.uri
@@ -72,7 +77,7 @@ class LocalServer(private val context: Context, port: Int) : NanoWSD(port) {
 
         override fun onOpen() {
             connections.add(this)
-            Log.d(TAG, "Client conectat. Total: ${connections.size}")
+            Log.d(TAG, "Utilizator conectat. Total: ${connections.size}")
             this@LocalServer.broadcastUserCount()
         }
 
@@ -82,7 +87,7 @@ class LocalServer(private val context: Context, port: Int) : NanoWSD(port) {
             initiatedByRemote: Boolean
         ) {
             connections.remove(this)
-            Log.d(TAG, "Client deconectat.")
+            Log.d(TAG, "Utilizator deconectat.")
             this@LocalServer.broadcastUserCount()
         }
 

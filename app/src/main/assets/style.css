@@ -95,7 +95,7 @@ body {
 #chat-screen {
     display: flex;
     flex-direction: column;
-    height: 100%; /* umple toată înălțimea disponibilă */
+    height: 100vh;
 }
 
 /* ================== HEADER ================== */
@@ -138,66 +138,133 @@ body {
     background: #00c853;
 }
 
-/* ================== MESSAGES ================== */
+/* ================== MESSAGES AREA ================== */
 #messages-list {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 4px; /* Spațiu mic între bulele aceluiași grup */
+    background-color: #000000;
+    -webkit-overflow-scrolling: touch; /* Scroll fin pe iOS */
 }
 
-/* Rând mesaj */
+/* --- Rând mesaj --- */
 .message-row {
     display: flex;
+    flex-direction: column;
     width: 100%;
-    animation: slideFadeUp 0.25s ease;
+    margin-bottom: 2px;
+    /* Animație pentru întreg rândul (alunecare ușoară în sus) */
+    animation: slideUp 0.3s ease-out;
 }
 
 .message-row.mine {
-    justify-content: flex-end;
+    align-items: flex-end; /* Împinge bula și numele la dreapta */
 }
 
 .message-row.theirs {
-    justify-content: flex-start;
+    align-items: flex-start; /* Împinge bula și numele la stânga */
 }
 
-/* Bulă mesaj */
-.bubble {
-    padding: 10px 16px;
-    border-radius: 16px;
-    font-size: 15px;
-    line-height: 1.4;
-    max-width: 75%;
-    background: var(--bubble-color);
-    color: white;
-    animation: bubblePop 0.18s ease;
-}
-
-/* Nume */
+/* --- Nume Expeditor --- */
 .sender-name {
     font-size: 11px;
-    color: var(--text-muted);
-    margin: 6px 12px 2px;
-    animation: fadeIn 0.3s ease;
+    color: #999;
+    margin: 4px 12px 2px;
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+    animation-delay: 0.1s;
 }
 
 .mine .sender-name {
-    display: none;
+    display: none; /* Nu afișăm numele la mesajele proprii */
 }
 
-/* Sistem */
+/* --- Bulă Mesaj (iMessage Style) --- */
+.bubble {
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 15px;
+    line-height: 1.4;
+    max-width: 75%;
+    word-wrap: break-word;
+    position: relative;
+    color: white;
+    /* Animația Elastic Pop din iMessage */
+    animation: iMessagePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Colțuri specifice iMessage */
+.mine .bubble {
+    border-bottom-right-radius: 4px;
+    transform-origin: bottom right; /* Crește din colțul de jos-dreapta */
+}
+
+.theirs .bubble {
+    border-bottom-left-radius: 4px;
+    background-color: #e4e6eb; /* Gri standard pentru alții */
+    color: black;
+    transform-origin: bottom left; /* Crește din colțul de jos-stânga */
+}
+
+/* --- Mesaje de Sistem --- */
 .system-msg {
     align-self: center;
     font-size: 12px;
-    color: var(--text-muted);
-    margin: 10px 0;
-    background: var(--surface-color);
-    padding: 6px 12px;
+    color: #8e8e93;
+    margin: 12px 0;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 5px 12px;
     border-radius: 12px;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.5s ease forwards;
 }
+
+/* ================== ANIMAȚII ================== */
+
+/* Animația principală de Pop (iMessage) */
+@keyframes iMessagePop {
+    0% {
+        opacity: 0;
+        transform: scale(0.6) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Alunecare ușoară pentru rând */
+@keyframes slideUp {
+    from { transform: translateY(10px); }
+    to { transform: translateY(0); }
+}
+
+/* Apariție progresivă pentru nume/sistem */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ================== CULORI DINAMICE ================== */
+/* Bulele mele se colorează în funcție de alegere */
+.mine .bubble.blue   { background-color: #0084ff; }
+.mine .bubble.red    { background-color: #ff3b30; }
+.mine .bubble.green  { background-color: #34c759; }
+.mine .bubble.purple { background-color: #af52de; }
+.mine .bubble.orange { background-color: #ff9500; }
+.mine .bubble.black  { background-color: #1c1c1e; }
+
+/* Bulele lor pot avea și ele culori dacă serverul trimite,
+   dar iMessage păstrează de obicei mesajele primite gri.
+   Dacă vrei culori și la ei, folosește regulile de mai jos: */
+.theirs .bubble.blue   { background-color: #0084ff; color: white; }
+.theirs .bubble.red    { background-color: #ff3b30; color: white; }
+.theirs .bubble.green  { background-color: #34c759; color: white; }
+.theirs .bubble.purple { background-color: #af52de; color: white; }
+.theirs .bubble.orange { background-color: #ff9500; color: white; }
+.theirs .bubble.black  { background-color: #1c1c1e; color: white; }
 
 /* ================== INPUT ================== */
 .input-area {
@@ -285,3 +352,83 @@ body {
         transform: scale(1);
     }
 }
+
+/* ================== COLOR PICKER ================== */
+/* ================== COLOR PICKER LABEL ================== */
+.color-picker-label {
+    position: absolute;
+    bottom: 78px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    z-index: 1001;
+}
+/* ================== COLOR PICKER (LOGIN ONLY) ================== */
+.color-picker {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    z-index: 1001;
+}
+
+.color-option {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-option.selected {
+    border-color: white;
+}
+
+/* Disabled after login */
+.color-picker.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.color-option {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-option.selected {
+    border-color: white;
+}
+
+/* Culori */
+.color-option.blue { background: #2196f3; }
+.color-option.red { background: #f44336; }
+.color-option.green { background: #4caf50; }
+.color-option.purple { background: #9c27b0; }
+.color-option.orange { background: #ff9800; }
+.color-option.white { background: #ffffff; }
+
+/* ================== BUBBLE COLORS ================== */
+.bubble.blue { background: #2196f3; }
+.bubble.red { background: #f44336; }
+.bubble.green { background: #4caf50; }
+.bubble.purple { background: #9c27b0; }
+.bubble.orange { background: #ff9800; }
+.bubble.white {
+    background: #ffffff;
+    color: #000000;
+}
+
+/* Color picker disabled after login */
+.color-picker.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+

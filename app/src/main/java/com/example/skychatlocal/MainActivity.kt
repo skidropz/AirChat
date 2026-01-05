@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         // IP inteligent
         val ipAddress = getSmartIpAddress()
         val url = "http://$ipAddress:$PORT"
-        ipText.text = "👉 $url"
+        ipText.text = "$url"
 
         // Generare QR
         try {

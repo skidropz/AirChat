@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.skychatlocal"
+        applicationId = "com.skidropz.airchat"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
