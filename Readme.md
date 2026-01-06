@@ -15,8 +15,12 @@ Este soluția pentru situațiile de criză, drumeții în zone izolate sau aglom
 ## 📸 Screenshots
 
 <p float="left">
-<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-12-961_com.example.skychatlocal-edit.jpg" alt="Login Screen" width="300">
-<img src="https://github.com/skidropz/SkyChat/blob/main/Screenshot_2026-01-01-22-43-32-088_com.example.skychatlocal-edit.jpg" alt="Chat Screen" width="300">
+<img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20principala%CC%86.png" alt="Interfața principală" width="300">
+    <img src="https://github.com/skidropz/AirChat/blob/main/Codul%20QR.png" alt="Codul QR" width="300">
+<img src="https://github.com/skidropz/AirChat/blob/main/Chat.png" alt="Chat" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Lista%CC%86%20utilizatori%20conectat%CC%A6i.png" alt="Listă useri activi" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20din%20browser.png" alt="Interfața din browser" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%CC%86%20Mesh.png" alt="Interfață Mesh" width="300">
 </p>
 
 ---
