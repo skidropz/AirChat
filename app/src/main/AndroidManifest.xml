@@ -9,23 +9,27 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
 
-    <!-- BLUETOOTH (MESH) -->
-    <!-- Pentru Android 12+ -->
+    <!-- BLUETOOTH (MESH NETWORK) -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <!-- Pentru Android mai vechi -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <!-- LOCATIE (NECESAR PENTRU DISCOVERY) -->
+    <!-- LOCATIE & GPS (CRITIC PENTRU BUSOLA SI MESH) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- NOILE PERMISIUNI (FIX PENTRU CRASH SI FUNCTIONALITATI) -->
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- FIX CRASH BUZZ -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Notificari Android 13+ -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Compatibilitate Web -->
+    <!-- MICROFON (MESAJE VOCALE) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.webkit.resource.AUDIO_CAPTURE" />
+
+    <!-- VIBRATII (BUZZ) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- NOTIFICARI (ANDROID 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"

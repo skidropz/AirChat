@@ -7,6 +7,8 @@
     --text-muted: #9a9a9a;
     --ios-gray: #1c1c1e;
     --ios-separator: #38383a;
+    --record-red: #ff3b30;
+    --compass-green: #00ff00;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -92,6 +94,16 @@ body {
 .chat-image:active { transform: scale(0.97); }
 .bubble.has-image { padding: 4px; }
 
+/* CUSTOM AUDIO PLAYER */
+.custom-audio-player { display: flex; align-items: center; width: 200px; height: 40px; gap: 10px; }
+.audio-play-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.2); border: none; color: inherit; font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.bubble.white .audio-play-btn { background: #f0f0f0; color: black; }
+.audio-waveform { display: flex; align-items: center; gap: 2px; flex: 1; height: 100%; }
+.waveform-bar { width: 3px; background-color: rgba(255,255,255,0.4); border-radius: 2px; transition: height 0.2s, background-color 0.2s; }
+.bubble.white .waveform-bar { background-color: rgba(0,0,0,0.2); }
+.waveform-bar.active { background-color: rgba(255,255,255,1); }
+.bubble.white .waveform-bar.active { background-color: #000; }
+
 .reply-preview-in-message { border-left: 2px solid rgba(255,255,255,0.5); padding-left: 8px; margin-bottom: 6px; font-size: 11px; opacity: 0.8; background: rgba(0,0,0,0.1); border-radius: 4px; padding: 4px 8px; display: flex; flex-direction: column; cursor: pointer; }
 .reply-from-name { font-weight: bold; margin-bottom: 2px; }
 .reply-original-text { font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
@@ -100,80 +112,45 @@ body {
 .message-row.mine .seen-label { align-self: flex-end; text-align: right; }
 .message-row.theirs .seen-label { align-self: flex-start; text-align: left; }
 
-.highlight-message { animation: highlight-flash 1s ease-out; border-radius: 10px; }
-
-.image-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-.image-overlay.active { display: flex !important; animation: fadeIn 0.3s ease; }
-#full-image { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.8); opacity: 0; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; }
-.image-overlay.active #full-image { transform: scale(1); opacity: 1; }
-#close-image-btn { position: absolute; top: 40px; right: 20px; color: white; font-size: 30px; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4001; }
-
-.input-container-wrapper { background: #000; border-top: 1px solid var(--border-color); z-index: 50; display: flex; flex-direction: column; }
+.input-container-wrapper { background: #000; border-top: 1px solid var(--border-color); z-index: 50; display: flex; flex-direction: column; position: relative; }
 #reply-bar { background: #1c1c1e; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; animation: slideUp 0.2s ease; }
 .reply-content { display: flex; flex-direction: column; font-size: 12px; color: #ccc; overflow: hidden; }
 .reply-title b { color: #0084ff; }
 .reply-text-preview { font-style: italic; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80vw; }
 #close-reply-btn { background: none; border: none; color: #888; font-size: 18px; padding: 5px; cursor: pointer; }
 
+/* RECORDING OVERLAY */
+#recording-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: #000; z-index: 60; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; animation: fadeIn 0.2s ease;
+}
+.rec-indicator { width: 12px; height: 12px; border-radius: 50%; background: var(--record-red); animation: pulse-red 1s infinite; }
+#rec-timer { color: white; font-weight: bold; font-family: monospace; font-size: 16px; margin-left: 10px; flex-grow: 1; }
+.rec-cancel-text { color: #888; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; animation: slideRight 1s infinite alternate; }
+
 .input-area { padding: 10px; display: flex; align-items: center; gap: 10px; }
 .input-area input { flex: 1; padding: 12px 15px; border-radius: 20px; border: none; background: var(--surface-color); color: white; font-size: 15px; outline: none; }
 .input-area button { background: none; border: none; color: white; font-size: 20px; padding: 5px; cursor: pointer; }
-#photo-btn, #buzz-btn { padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s; }
-#photo-btn:active, #buzz-btn:active { background-color: #333; }
+#photo-btn, #buzz-btn, #mic-btn { padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s; }
+#photo-btn:active, #buzz-btn:active, #mic-btn:active { background-color: #333; }
+#mic-btn.active { color: var(--record-red); transform: scale(1.2); }
 .hidden { display: none !important; }
 
-/* =========================================
-   MODAL UTILIZATORI - FIX ANIMATIE
-   ========================================= */
-.modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 3000;
-    align-items: center; justify-content: center;
-}
+/* PARTICLES */
+.swipe-particle { position: fixed; width: 3px; height: 3px; background-color: #FFF; border-radius: 50%; pointer-events: none; z-index: 10000; box-shadow: 0 0 6px #FFF, 0 0 10px #FFD700; animation: sparkleFly 0.5s ease-out forwards; }
+.explosion-particle { position: fixed; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; z-index: 10001; box-shadow: 0 0 10px currentColor; animation: explodeFade 0.7s ease-out forwards; }
 
-/* Cand este deschis, aplicam animatia de FADE IN pe fundal */
-.modal-overlay.open {
-    display: flex !important;
-    animation: modalFadeIn 0.3s forwards;
-}
-
-.modal-content {
-    background: var(--ios-gray);
-    width: 85%; max-width: 320px;
-    border-radius: 20px; padding: 0;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    /* Stare initiala: invizibil si mic */
-    opacity: 0;
-    transform: scale(0.9);
-}
-
-/* Cand este deschis, aplicam animatia de POP IN pe fereastra */
-.modal-overlay.open .modal-content {
-    animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards;
-}
-
-/* DEFINIRE KEYFRAMES EXPLICITE */
-@keyframes modalFadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes modalPopIn {
-    0% { opacity: 0; transform: scale(0.9); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-/* Restul stilurilor modal */
+/* MODAL COMMON */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 3000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex !important; animation: modalFadeIn 0.3s forwards; }
+.modal-content { background: var(--ios-gray); width: 85%; max-width: 320px; border-radius: 20px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: scale(0.9); }
+.modal-overlay.open .modal-content { animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--ios-separator); display: flex; justify-content: space-between; align-items: center; }
 .modal-header h3 { color: white; font-size: 17px; font-weight: 600; }
 .modal-header button { background: none; border: none; color: #8e8e93; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; background: rgba(255,255,255,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
 #users-list-container { max-height: 300px; overflow-y: auto; padding: 10px 0; }
-.user-item { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border-color); }
+.user-item { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+.user-item:active { background: rgba(255,255,255,0.1); }
 .user-item:last-child { border-bottom: none; }
 .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #0084ff; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; margin-right: 12px; }
 .user-info { display: flex; flex-direction: column; }
@@ -181,6 +158,44 @@ body {
 .user-status-list { font-size: 12px; color: var(--text-muted); }
 .modal-footer { padding: 12px; text-align: center; background: rgba(0,0,0,0.2); }
 .modal-hint { font-size: 11px; color: #666; }
+
+/* COMPASS */
+.compass-content { background: #000; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 20px; position: relative; opacity: 0; transform: scale(0.9); }
+.modal-overlay.open .compass-content { animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+#close-compass-btn { position: absolute; top: 40px; right: 20px; color: white; font-size: 24px; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.compass-header { text-align: center; }
+.compass-header h2 { color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+.compass-header h3 { color: white; font-size: 28px; }
+.compass-circle { width: 260px; height: 260px; border: 2px solid #333; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(0,255,0,0.05) 0%, rgba(0,0,0,0) 70%); }
+.compass-arrow { font-size: 80px; color: var(--compass-green); text-shadow: 0 0 20px var(--compass-green); transition: transform 0.1s linear; }
+.compass-radar-sweep { position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0deg, rgba(0,255,0,0.1) 60deg, transparent 60deg); animation: radarSpin 2s linear infinite; pointer-events: none; }
+.compass-info { text-align: center; }
+
+/* MODIFICARE: Dimensiune font si stare 'waiting' */
+#compass-distance {
+    font-size: 42px;
+    font-weight: bold;
+    color: white;
+    font-family: monospace;
+}
+/* Cand cauta semnal, facem textul mai mic si gri */
+#compass-distance.waiting {
+    font-size: 18px;
+    color: #888;
+    font-family: -apple-system, sans-serif;
+    font-weight: normal;
+}
+
+/* Ascundem eticheta DISTANTA cand nu avem date */
+.compass-info small { color: var(--text-muted); letter-spacing: 1px; }
+.hidden-label { display: none; }
+
+/* IMAGES */
+.image-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.image-overlay.active { display: flex !important; animation: fadeIn 0.3s ease; }
+#full-image { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.8); opacity: 0; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; }
+.image-overlay.active #full-image { transform: scale(1); opacity: 1; }
+#close-image-btn { position: absolute; top: 40px; right: 20px; color: white; font-size: 30px; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4001; }
 
 @keyframes iMessagePop { 0% { opacity: 0; transform: scale(0.6) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 @keyframes slideUp { from { transform: translateY(10px); } to { transform: translateY(0); } }
@@ -191,3 +206,10 @@ body {
 @keyframes highlight-flash { 0% { background-color: rgba(0, 132, 255, 0.0); } 20% { background-color: rgba(0, 132, 255, 0.3); } 100% { background-color: rgba(0, 132, 255, 0.0); } }
 @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
 .shaking { animation: shake 0.5s; animation-iteration-count: 1; }
+@keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes slideRight { from { transform: translateX(0); } to { transform: translateX(5px); } }
+@keyframes modalFadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes modalPopIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes sparkleFly { 0% { transform: translate(0, 0) scale(1.5); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
+@keyframes explodeFade { 0% { transform: translate(0, 0) scale(1.5); opacity: 1; } 100% { transform: translate(var(--ex), var(--ey)) scale(0); opacity: 0; } }
+@keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

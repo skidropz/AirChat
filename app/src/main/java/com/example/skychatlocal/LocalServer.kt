@@ -40,7 +40,7 @@ class LocalServer(
             val inputStream = context.assets.open(assetPath)
             newChunkedResponse(Response.Status.OK, mimeType, inputStream)
         } catch (e: IOException) {
-            newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "File not found")
+            newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "Nu s-a găsit fișierul!")
         }
     }
 

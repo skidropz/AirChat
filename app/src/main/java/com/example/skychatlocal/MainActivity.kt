@@ -7,8 +7,16 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.net.Uri
@@ -48,7 +56,7 @@ interface WebServerListener {
     fun onClientDisconnected()
 }
 
-class MainActivity : AppCompatActivity(), WebServerListener {
+class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener, LocationListener {
 
     private var server: LocalServer? = null
     private var meshManager: MeshManager? = null
@@ -59,6 +67,19 @@ class MainActivity : AppCompatActivity(), WebServerListener {
 
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
     private val FILE_CHOOSER_RESULT_CODE = 100
+
+    // SENSORS
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var magnetometer: Sensor? = null
+    private var locationManager: LocationManager? = null
+
+    private val accelerometerReading = FloatArray(3)
+    private val magnetometerReading = FloatArray(3)
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
+
+    private var lastUpdate = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -77,6 +98,12 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         val qrImage = findViewById<ImageView>(R.id.qrImage)
         val webView = findViewById<WebView>(R.id.webView)
 
+        // INIT SENSORS
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
         meshManager = MeshManager(this, "Node-${Build.MODEL}",
             onMessageReceived = { server?.broadcastToAll(it) },
             onDeviceLost = { onClientDisconnected() },
@@ -86,7 +113,7 @@ class MainActivity : AppCompatActivity(), WebServerListener {
                     showDiscoveryNotification(name)
                     AlertDialog.Builder(this)
                         .setTitle("AirChat Detectat")
-                        .setMessage("Găsit server '$name'. Conectare?")
+                        .setMessage("Găsit Mesh '$name'. Conectare?")
                         .setCancelable(false)
                         .setPositiveButton("Conectare") { _, _ ->
                             meshManager?.connectToPeer(id)
@@ -130,6 +157,60 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         setupWebView(webView)
     }
 
+    override fun onResume() {
+        super.onResume()
+        accelerometer?.also { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL) }
+        magnetometer?.also { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL) }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 1f, this)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
+        locationManager?.removeUpdates(this)
+    }
+
+    // --- SENSOR EVENTS ---
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event == null) return
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading, 0, accelerometerReading.size)
+        } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading, 0, magnetometerReading.size)
+        }
+
+        // Calculează Azimutul (Busola) doar o dată la 200ms
+        val now = System.currentTimeMillis()
+        if (now - lastUpdate > 200) {
+            lastUpdate = now
+            SensorManager.getRotationMatrix(rotationMatrix, null, accelerometerReading, magnetometerReading)
+            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+            // Convert to degrees (0-360)
+            var azimuth = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+            if (azimuth < 0) azimuth += 360f
+
+            // Trimite în WebView
+            runOnUiThread {
+                findViewById<WebView>(R.id.webView).evaluateJavascript("updateMyHeading($azimuth)", null)
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    // --- LOCATION EVENTS ---
+    override fun onLocationChanged(location: Location) {
+        val lat = location.latitude
+        val lon = location.longitude
+        runOnUiThread {
+            findViewById<WebView>(R.id.webView).evaluateJavascript("updateMyLocation($lat, $lon)", null)
+        }
+    }
+
     private fun startPulsingEffect() {
         runOnUiThread { findViewById<WebView>(R.id.webView).evaluateJavascript("startPulsing();", null) }
     }
@@ -138,7 +219,6 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         runOnUiThread { findViewById<WebView>(R.id.webView).evaluateJavascript("stopPulsing();", null) }
     }
 
-    // --- BUZZ VIBRATION (FIXAT CU TRY-CATCH) ---
     private fun triggerBuzzVibration() {
         try {
             val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -150,9 +230,7 @@ class MainActivity : AppCompatActivity(), WebServerListener {
                     vibrator.vibrate(500)
                 }
             }
-        } catch (e: Exception) {
-            Log.e("AirChat", "Eroare la vibrație: ${e.message}")
-        }
+        } catch (e: Exception) { Log.e("AirChat", "Err Vib: ${e.message}") }
     }
 
     private fun createNotificationChannel() {
@@ -179,16 +257,19 @@ class MainActivity : AppCompatActivity(), WebServerListener {
     override fun onMessageFromWeb(json: String) {
         meshManager?.sendMessage(json)
         if (json.contains("\"type\":\"buzz\"")) {
-            runOnUiThread {
-                triggerBuzzVibration()
-            }
+            runOnUiThread { triggerBuzzVibration() }
         }
     }
 
     override fun onClientDisconnected() { runOnUiThread { Toast.makeText(this, "Deconectat!", Toast.LENGTH_SHORT).show() } }
 
     private fun checkAllPermissions() {
-        val p = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.RECORD_AUDIO)
+        val p = mutableListOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            Manifest.permission.VIBRATE
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             p.add(Manifest.permission.BLUETOOTH_SCAN)
             p.add(Manifest.permission.BLUETOOTH_ADVERTISE)
@@ -231,7 +312,17 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         webView.webViewClient = WebViewClient()
 
         webView.webChromeClient = object : WebChromeClient() {
-            override fun onPermissionRequest(request: PermissionRequest) { request.grant(request.resources) }
+            override fun onPermissionRequest(request: PermissionRequest) {
+                val resources = request.resources
+                for (r in resources) {
+                    if (PermissionRequest.RESOURCE_AUDIO_CAPTURE == r) {
+                        request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
+                        return
+                    }
+                }
+                request.grant(request.resources)
+            }
+
             override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
                 fileUploadCallback?.onReceiveValue(null)
                 fileUploadCallback = filePathCallback
