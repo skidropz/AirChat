@@ -8,10 +8,12 @@ let isLoggedIn = false;
 let pendingLogin = false;
 let myBubbleColor = "blue";
 let colorLocked = false;
+
+// Lista utilizatorilor activi
 const knownUsers = new Map();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. CLICK CULORI
+    // 1. CULORI
     const colorOptions = document.querySelectorAll('.color-option');
     colorOptions.forEach(option => {
         option.addEventListener('click', () => {
@@ -22,18 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. CLICK LOGIN
+    // 2. LOGIN
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', login);
-    }
+    if (loginBtn) loginBtn.addEventListener('click', login);
 
     const loginInput = document.getElementById('username-input');
-    if (loginInput) {
-        loginInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") login();
-        });
-    }
+    if (loginInput) loginInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") login();
+    });
 
     // 3. CHAT
     const sendBtn = document.getElementById('send-btn');
@@ -44,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     });
 
-    // 4. MODAL LOGIC
+    // 4. MODAL USERS
     const onlineCountBtn = document.getElementById('online-count');
     const modal = document.getElementById('users-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -78,13 +76,28 @@ function adjustLayout() {
     if (chat) chat.style.height = window.innerHeight + 'px';
 }
 
+// --- FUNCTIA NOUA: ACTUALIZARE CONTOR ---
+function updateOnlineCounter() {
+    const el = document.getElementById('online-count');
+    // Numarul este: Eu (1) + Cati sunt in lista knownUsers
+    const count = 1 + knownUsers.size;
+    if (el) {
+        el.textContent = `${count} online`;
+    }
+}
+
 function renderUserList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = "";
+
+    // Eu
     addUserRow(container, myName + " (Eu)", myBubbleColor, true);
+
+    // Ceilalti
     knownUsers.forEach((color, name) => {
         if (name !== myName) addUserRow(container, name, color, false);
     });
+
     if (knownUsers.size === 0) {
         container.innerHTML += `<div style="padding:20px; text-align:center; color:#666; font-size:13px;">Nu există activitate recentă.</div>`;
     }
@@ -93,6 +106,7 @@ function renderUserList() {
 function addUserRow(container, name, color, isOnline) {
     const div = document.createElement('div');
     div.className = 'user-item';
+
     let bg = "#0084ff";
     if(color === "red") bg = "#ff3b30";
     if(color === "green") bg = "#34c759";
@@ -131,12 +145,17 @@ function completeLogin() {
     isLoggedIn = true;
     pendingLogin = false;
     colorLocked = true;
+
     document.querySelector('.color-picker-container').style.display = 'none';
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('chat-screen').classList.remove('hidden');
     document.getElementById('status-dot').classList.add('connected');
+
     sendPayload({ type: 'system', text: `${myName} s-a conectat.` });
     startHeartbeat();
+
+    // Initializam contorul (1 online = eu)
+    updateOnlineCounter();
 }
 
 function connectServer() {
@@ -187,19 +206,31 @@ function sendMessage() {
 }
 
 function handleData(data) {
-    if (data.sender && data.sender !== myName) knownUsers.set(data.sender, data.color || "blue");
+    // 1. Detectam utilizatori noi si actualizam contorul
+    if (data.sender && data.sender !== myName) {
+        if (!knownUsers.has(data.sender)) {
+            // E un user nou, il adaugam
+            knownUsers.set(data.sender, data.color || "blue");
+            // Si actualizam imediat textul de sus
+            updateOnlineCounter();
+        } else {
+            // E un user vechi, poate si-a schimbat culoarea (putin probabil, dar salvam)
+            knownUsers.set(data.sender, data.color || "blue");
+        }
+    }
+
     switch (data.type) {
         case 'chat': renderMessage(data); break;
         case 'system':
+            // Daca e mesaj de sistem "Ion s-a conectat"
             if (data.text.includes("s-a conectat")) {
                 const name = data.text.replace(" s-a conectat.", "");
-                if(name) knownUsers.set(name, "blue");
+                if(name && name !== myName) {
+                    knownUsers.set(name, "blue");
+                    updateOnlineCounter();
+                }
             }
             renderSystemMessage(data.text);
-            break;
-        case 'user_count':
-            const el = document.getElementById('online-count');
-            if (el) el.textContent = `${data.count} online`;
             break;
     }
 }
@@ -227,25 +258,19 @@ function renderSystemMessage(text) {
     list.scrollTop = list.scrollHeight;
 }
 
-// --- MODIFICARE AICI: Schimbare Text și Animație Buton ---
+// Android Pulsing Interface
 window.startPulsing = function() {
-    console.log("Mesh Detected: Pulsing Button");
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        // Schimbăm textul
         loginBtn.innerText = "Conectare în Mesh";
-        // Adăugăm clasa de pulsare
         loginBtn.classList.add('pulsing-button-mode');
     }
 };
 
 window.stopPulsing = function() {
-    console.log("Mesh Stopped: Normal Button");
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        // Revenim la textul original
-        loginBtn.innerText = "Conectare";
-        // Scoatem clasa
+        loginBtn.innerText = "CONECTARE";
         loginBtn.classList.remove('pulsing-button-mode');
     }
 };

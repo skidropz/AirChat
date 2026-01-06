@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.ToneGenerator
-import android.net.http.SslError
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +20,6 @@ import android.text.format.Formatter
 import android.util.Log
 import android.view.WindowManager
 import android.webkit.PermissionRequest
-import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -104,7 +102,8 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         } catch (e: Exception) { Toast.makeText(this, "Err: ${e.message}", Toast.LENGTH_LONG).show() }
 
         val ipAddress = getSmartIpAddress()
-        val url = "https://$ipAddress:$PORT"
+        // SCHIMBARE: HTTP simplu
+        val url = "http://$ipAddress:$PORT"
         ipText.text = url
 
         ipText.setOnLongClickListener {
@@ -184,10 +183,8 @@ class MainActivity : AppCompatActivity(), WebServerListener {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView(webView: WebView) {
-        // --- MODIFICARE IMPORTANTA AICI: Clear Cache ---
         webView.clearCache(true)
         webView.clearHistory()
-        // ----------------------------------------------
 
         webView.settings.apply {
             javaScriptEnabled = true
@@ -195,22 +192,22 @@ class MainActivity : AppCompatActivity(), WebServerListener {
             mediaPlaybackRequiresUserGesture = false
             useWideViewPort = true
             loadWithOverviewMode = true
-            // Asigură că încărcăm fișierele noi
             cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
         }
-        webView.webViewClient = object : WebViewClient() {
-            @SuppressLint("WebViewClientOnReceivedSslError")
-            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) { handler?.proceed() }
-        }
+
+        // SCHIMBARE: Nu mai avem nevoie de SSL Error Handler
+        webView.webViewClient = WebViewClient()
+
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) { request.grant(request.resources) }
-            // Debugging pentru consola JS în Logcat
             override fun onConsoleMessage(message: android.webkit.ConsoleMessage?): Boolean {
-                Log.d("WebViewConsole", "${message?.message()} -- line ${message?.lineNumber()}")
+                Log.d("WebViewConsole", "${message?.message()}")
                 return true
             }
         }
-        webView.loadUrl("https://127.0.0.1:$PORT")
+
+        // SCHIMBARE: HTTP
+        webView.loadUrl("http://127.0.0.1:$PORT")
     }
 
     private fun dpToPx(dp: Int) = (dp * resources.displayMetrics.density).roundToInt()
