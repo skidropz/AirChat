@@ -1,5 +1,5 @@
 
-# AirChat v2.0
+# AirChat
 
 **AirChat** este o aplicație avansată de comunicare **peer-to-peer**, care funcționează **fără internet**, transformând un telefon Android într-un **hub de comunicații locale și Mesh**.
 
