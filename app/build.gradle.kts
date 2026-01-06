@@ -54,6 +54,9 @@ dependencies {
     dependencies {
         // Varianta corectă pentru Kotlin DSL (.kts)
         implementation("androidx.core:core-splashscreen:1.0.1")
+        dependencies {
+            implementation("com.google.android.gms:play-services-nearby:19.0.0")
+        }
     }
 
     // --- ADĂUGĂM ACESTE LINII PENTRU SERVER ---

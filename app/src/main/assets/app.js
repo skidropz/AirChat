@@ -1,59 +1,128 @@
-// 1. Configurare Protocol și URL
 const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 const WS_URL = protocol + window.location.host;
 
-// 2. Variabile de Stare
 let socket;
 let myName = "";
 let heartbeatInterval;
 let isLoggedIn = false;
 let pendingLogin = false;
-let myBubbleColor = "blue"; // Culoarea selectată
+let myBubbleColor = "blue";
 let colorLocked = false;
+const knownUsers = new Map();
 
-// 3. Elemente DOM
-const loginScreen = document.getElementById('login-screen');
-const chatScreen = document.getElementById('chat-screen');
-const msgList = document.getElementById('messages-list');
-const msgInput = document.getElementById('msg-input');
-const statusDot = document.getElementById('status-dot');
-const onlineCountEl = document.getElementById('online-count');
-const colorPicker = document.querySelector('.color-picker');
-
-// 4. Logica Selector Culori
-document.querySelectorAll('.color-option').forEach(option => {
-    option.addEventListener('click', () => {
-        if (colorLocked) return;
-
-        document.querySelectorAll('.color-option')
-            .forEach(o => o.classList.remove('selected'));
-
-        option.classList.add('selected');
-        myBubbleColor = option.dataset.color;
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. CLICK CULORI
+    const colorOptions = document.querySelectorAll('.color-option');
+    colorOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            if (colorLocked) return;
+            colorOptions.forEach(o => o.classList.remove('selected'));
+            option.classList.add('selected');
+            myBubbleColor = option.dataset.color;
+        });
     });
+
+    // 2. CLICK LOGIN
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', login);
+    }
+
+    const loginInput = document.getElementById('username-input');
+    if (loginInput) {
+        loginInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") login();
+        });
+    }
+
+    // 3. CHAT
+    const sendBtn = document.getElementById('send-btn');
+    if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+
+    const msgInput = document.getElementById('msg-input');
+    if (msgInput) msgInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    // 4. MODAL LOGIC
+    const onlineCountBtn = document.getElementById('online-count');
+    const modal = document.getElementById('users-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    if (onlineCountBtn && modal) {
+        onlineCountBtn.addEventListener('click', () => {
+            renderUserList();
+            modal.classList.add('open');
+        });
+    }
+
+    if (closeModalBtn && modal) {
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('open');
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+    }
+
+    adjustLayout();
+    window.addEventListener('resize', adjustLayout);
+    connectServer();
 });
 
-// 5. Logica de Login
+function adjustLayout() {
+    const chat = document.getElementById('chat-screen');
+    if (chat) chat.style.height = window.innerHeight + 'px';
+}
+
+function renderUserList() {
+    const container = document.getElementById('users-list-container');
+    container.innerHTML = "";
+    addUserRow(container, myName + " (Eu)", myBubbleColor, true);
+    knownUsers.forEach((color, name) => {
+        if (name !== myName) addUserRow(container, name, color, false);
+    });
+    if (knownUsers.size === 0) {
+        container.innerHTML += `<div style="padding:20px; text-align:center; color:#666; font-size:13px;">Nu există activitate recentă.</div>`;
+    }
+}
+
+function addUserRow(container, name, color, isOnline) {
+    const div = document.createElement('div');
+    div.className = 'user-item';
+    let bg = "#0084ff";
+    if(color === "red") bg = "#ff3b30";
+    if(color === "green") bg = "#34c759";
+    if(color === "purple") bg = "#af52de";
+    if(color === "orange") bg = "#ff9500";
+    if(color === "white") bg = "#ffffff";
+    const textColor = (color === "white") ? "black" : "white";
+
+    div.innerHTML = `
+        <div class="user-avatar" style="background:${bg}; color:${textColor}">
+            ${name.charAt(0).toUpperCase()}
+        </div>
+        <div class="user-info">
+            <span class="user-name-list">${name}</span>
+            <span class="user-status-list">${isOnline ? 'Conectat' : 'Activ recent'}</span>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
 function login() {
     const input = document.getElementById('username-input');
     const name = input.value.trim();
-
-    if (!name) {
-        alert("Te rugăm să introduci un nume!");
-        return;
-    }
-
-    myName = name; // Salvăm numele utilizatorului curent
-
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        completeLogin();
-    } else {
+    if (!name) { alert("Te rugăm să introduci un nume!"); return; }
+    myName = name;
+    if (socket && socket.readyState === WebSocket.OPEN) completeLogin();
+    else {
         pendingLogin = true;
         renderSystemMessage("Se conectează la server...");
-        // Dacă socket-ul e închis, încercăm să-l reconectăm
-        if (!socket || socket.readyState === WebSocket.CLOSED) {
-            connectServer();
-        }
+        if (!socket || socket.readyState === WebSocket.CLOSED) connectServer();
     }
 }
 
@@ -61,172 +130,122 @@ function completeLogin() {
     if (isLoggedIn) return;
     isLoggedIn = true;
     pendingLogin = false;
-
-    // Blocăm schimbarea culorii
     colorLocked = true;
-    if (colorPicker) colorPicker.style.display = "none";
-
-    // Schimbăm ecranele
-    loginScreen.classList.add('hidden');
-    chatScreen.classList.remove('hidden');
-    statusDot.classList.add('connected');
-
-    // Anunțăm intrarea pe server
+    document.querySelector('.color-picker-container').style.display = 'none';
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('chat-screen').classList.remove('hidden');
+    document.getElementById('status-dot').classList.add('connected');
     sendPayload({ type: 'system', text: `${myName} s-a conectat.` });
     startHeartbeat();
 }
 
-// 6. Conexiunea WebSocket
 function connectServer() {
     socket = new WebSocket(WS_URL);
-
     socket.onopen = () => {
-        console.log("Conectat la AirChat Server");
-        statusDot.classList.add('connected');
-
-        if (myName && (pendingLogin || !isLoggedIn)) {
-            completeLogin();
-        }
+        document.getElementById('status-dot').classList.add('connected');
+        if (myName && (pendingLogin || !isLoggedIn)) completeLogin();
     };
-
     socket.onmessage = (event) => {
         if (event.data === "ping") return;
-
-        try {
-            const data = JSON.parse(event.data);
-            handleData(data);
-        } catch (e) {
-            console.error("Eroare parsare mesaj JSON", e);
-        }
+        try { handleData(JSON.parse(event.data)); } catch (e) { }
     };
-
     socket.onclose = () => {
-        statusDot.classList.remove('connected');
+        document.getElementById('status-dot').classList.remove('connected');
         renderSystemMessage("⚠️ Conexiune pierdută.");
         stopHeartbeat();
         isLoggedIn = false;
-        // Încercare de reconectare automată după 3 secunde
         setTimeout(connectServer, 3000);
     };
-
-    socket.onerror = (err) => console.error("Eroare Socket:", err);
 }
 
-// 7. Heartbeat (Puls pentru a menține conexiunea activă)
 function startHeartbeat() {
     stopHeartbeat();
     heartbeatInterval = setInterval(() => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send("ping");
-        }
+        if (socket && socket.readyState === WebSocket.OPEN) socket.send("ping");
     }, 10000);
 }
 
 function stopHeartbeat() {
-    if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
-    }
+    if (heartbeatInterval) { clearInterval(heartbeatInterval); heartbeatInterval = null; }
 }
 
-// 8. Trimitere Mesaje
 function sendPayload(data) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         data.sender = myName;
         data.color = myBubbleColor;
         socket.send(JSON.stringify(data));
-    } else {
-        console.warn("Nu se poate trimite: Socket-ul nu este deschis.");
     }
 }
 
 function sendMessage() {
-    const text = msgInput.value.trim();
+    const inp = document.getElementById('msg-input');
+    const text = inp.value.trim();
     if (!text) return;
-
     sendPayload({ type: 'chat', text: text });
-    msgInput.value = "";
-    msgInput.focus();
+    inp.value = "";
+    inp.focus();
 }
 
-// 9. Gestionare Date Primite
-async function handleData(data) {
+function handleData(data) {
+    if (data.sender && data.sender !== myName) knownUsers.set(data.sender, data.color || "blue");
     switch (data.type) {
-        case 'chat':
-            renderMessage(data);
-            break;
+        case 'chat': renderMessage(data); break;
         case 'system':
+            if (data.text.includes("s-a conectat")) {
+                const name = data.text.replace(" s-a conectat.", "");
+                if(name) knownUsers.set(name, "blue");
+            }
             renderSystemMessage(data.text);
             break;
         case 'user_count':
-            if (onlineCountEl) onlineCountEl.textContent = `${data.count} online`;
+            const el = document.getElementById('online-count');
+            if (el) el.textContent = `${data.count} online`;
             break;
     }
 }
 
-// 10. RENDERIZARE MESAJE (Fix Aliniere Dreapta/Stânga)
 function renderMessage(data) {
-    // Verificare identitate: Comparăm numele expeditorului cu numele meu local
-    // Folosim trim() pentru a evita erori de la spații goale accidentale
+    const list = document.getElementById('messages-list');
     const isMe = data.sender.trim() === myName.trim();
     const color = data.color || "blue";
-
     const row = document.createElement('div');
-    // 'mine' merge la dreapta (CSS), 'theirs' la stânga (CSS)
     row.className = `message-row ${isMe ? 'mine' : 'theirs'}`;
-
     let content = "";
-    if (!isMe) {
-        // Numele apare doar deasupra mesajelor primite de la alții
-        content += `<div class="sender-name">${data.sender}</div>`;
-    }
-
+    if (!isMe) content += `<div class="sender-name">${data.sender}</div>`;
     content += `<div class="bubble ${color}">${data.text}</div>`;
-
     row.innerHTML = content;
-    msgList.appendChild(row);
-
-    // Scroll automat la ultimul mesaj
-    requestAnimationFrame(() => {
-        msgList.scrollTop = msgList.scrollHeight;
-    });
+    list.appendChild(row);
+    requestAnimationFrame(() => { list.scrollTop = list.scrollHeight; });
 }
 
 function renderSystemMessage(text) {
+    const list = document.getElementById('messages-list');
     const div = document.createElement('div');
     div.className = 'system-msg';
     div.innerText = text;
-    msgList.appendChild(div);
-    msgList.scrollTop = msgList.scrollHeight;
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
 }
 
-// 11. Evenimente Tastatură și UI Fixes
-msgInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+// --- MODIFICARE AICI: Schimbare Text și Animație Buton ---
+window.startPulsing = function() {
+    console.log("Mesh Detected: Pulsing Button");
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        // Schimbăm textul
+        loginBtn.innerText = "Conectare în Mesh";
+        // Adăugăm clasa de pulsare
+        loginBtn.classList.add('pulsing-button-mode');
     }
-});
+};
 
-// Fix pentru înălțimea ecranului pe iPhone (tastatura care ridică layout-ul)
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-if (isIOS) {
-    function adjustChatHeight() {
-        const chat = document.getElementById('chat-screen');
-        if (chat) chat.style.height = window.innerHeight + 'px';
+window.stopPulsing = function() {
+    console.log("Mesh Stopped: Normal Button");
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        // Revenim la textul original
+        loginBtn.innerText = "Conectare";
+        // Scoatem clasa
+        loginBtn.classList.remove('pulsing-button-mode');
     }
-    window.addEventListener('resize', adjustChatHeight);
-    adjustChatHeight();
-}
-
-// 12. Pornire automată la încărcarea paginii
-connectServer();
-
-function toggleModal(show) {
-    const modal = document.getElementById('info-modal');
-    if (show) {
-        modal.classList.remove('hidden');
-    } else {
-        modal.classList.add('hidden');
-    }
-}
+};

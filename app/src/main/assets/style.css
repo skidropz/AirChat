@@ -3,411 +3,56 @@
     --surface-color: #0e0e0e;
     --bubble-color: #1a1a1a;
     --border-color: #222222;
-
     --text-main: #ffffff;
     --text-muted: #9a9a9a;
+    --ios-gray: #1c1c1e;
+    --ios-separator: #38383a;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+html, body { height: 100%; }
 
-/* NOU: ca să putem folosi height: 100% în container-e */
-html,
-body {
-    height: 100%;
-}
-
-/* ================== BODY ================== */
 body {
     min-height: 100%;
     display: flex;
     flex-direction: column;
     background-color: var(--bg-color);
     color: var(--text-main);
-    overflow: hidden; /* scroll-ul e doar în #messages-list */
+    overflow: hidden;
+    user-select: none;
 }
 
-/* ================== LOGIN ================== */
+/* LOGIN SCREEN */
 #login-screen {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.35s ease;
+    position: fixed; inset: 0; background: #000;
+    z-index: 2000; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; animation: fadeIn 0.35s ease;
 }
+.login-box { text-align: center; width: 80%; max-width: 320px; animation: popIn 0.35s ease; position: relative; z-index: 2002; margin-bottom: 100px; }
+.login-box h1 { margin-bottom: 30px; color: white; font-size: 32px; letter-spacing: 1px; }
+.login-box input { width: 100%; padding: 15px; border-radius: 30px; border: 1px solid var(--border-color); background: var(--surface-color); color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
 
-.login-box {
-    text-align: center;
-    width: 80%;
-    max-width: 320px;
-    animation: popIn 0.35s ease;
-}
-
-.login-box h1 {
-    margin-bottom: 20px;
-    color: white;
-}
-
-.login-box input {
-    width: 100%;
-    padding: 15px;
-    border-radius: 30px;
-    border: 1px solid var(--border-color);
-    background: var(--surface-color);
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 15px;
-    outline: none;
-    transition: box-shadow 0.2s ease;
-}
-
-.login-box input:focus {
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
-}
-
+/* BUTON LOGIN */
 .login-box button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 30px;
-    border: 1px solid var(--border-color);
-    background: var(--surface-color);
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.15s ease, background 0.15s ease;
+    width: 100%; padding: 12px; border-radius: 30px;
+    border: 1px solid #0084ff; background: #0084ff;
+    color: white; font-weight: bold; font-size: 16px; cursor: pointer;
+    position: relative; z-index: 2100;
+    transition: transform 0.2s ease, background-color 0.2s;
 }
+.login-box button:active { transform: scale(0.97); opacity: 0.9; }
 
-.login-box button:active {
-    transform: scale(0.97);
-}
-
-/* ================== CHAT CONTAINER ================== */
-#chat-screen {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-/* ================== HEADER ================== */
-.header {
-    padding: 15px;
-    /* pentru telefoane cu notch (iOS), dar nu strică pe Android */
-    padding-top: calc(15px + env(safe-area-inset-top));
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #000;
-}
-
-.header-title {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: bold;
-    font-size: 16px;
-    color: white;
-}
-
-.online-count {
-    font-weight: normal;
-    font-size: 13px;
-    color: var(--text-muted);
-}
-
-.status-indicator {
-    width: 10px;
-    height: 10px;
-    background: #555;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 4px;
-}
-
-.connected {
-    background: #00c853;
-}
-
-/* ================== MESSAGES AREA ================== */
-#messages-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px; /* Spațiu mic între bulele aceluiași grup */
-    background-color: #000000;
-    -webkit-overflow-scrolling: touch; /* Scroll fin pe iOS */
-}
-
-/* --- Rând mesaj --- */
-.message-row {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 2px;
-    /* Animație pentru întreg rândul (alunecare ușoară în sus) */
-    animation: slideUp 0.3s ease-out;
-}
-
-.message-row.mine {
-    align-items: flex-end; /* Împinge bula și numele la dreapta */
-}
-
-.message-row.theirs {
-    align-items: flex-start; /* Împinge bula și numele la stânga */
-}
-
-/* --- Nume Expeditor --- */
-.sender-name {
-    font-size: 11px;
-    color: #999;
-    margin: 4px 12px 2px;
-    opacity: 0;
-    animation: fadeIn 0.4s ease forwards;
-    animation-delay: 0.1s;
-}
-
-.mine .sender-name {
-    display: none; /* Nu afișăm numele la mesajele proprii */
-}
-
-/* --- Bulă Mesaj (iMessage Style) --- */
-.bubble {
-    padding: 10px 16px;
-    border-radius: 18px;
-    font-size: 15px;
-    line-height: 1.4;
-    max-width: 75%;
-    word-wrap: break-word;
-    position: relative;
-    color: white;
-    /* Animația Elastic Pop din iMessage */
-    animation: iMessagePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-/* Colțuri specifice iMessage */
-.mine .bubble {
-    border-bottom-right-radius: 4px;
-    transform-origin: bottom right; /* Crește din colțul de jos-dreapta */
-}
-
-.theirs .bubble {
-    border-bottom-left-radius: 4px;
-    background-color: #e4e6eb; /* Gri standard pentru alții */
-    color: black;
-    transform-origin: bottom left; /* Crește din colțul de jos-stânga */
-}
-
-/* --- Mesaje de Sistem --- */
-.system-msg {
-    align-self: center;
-    font-size: 12px;
-    color: #8e8e93;
-    margin: 12px 0;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 5px 12px;
-    border-radius: 12px;
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* ================== ANIMAȚII ================== */
-
-/* Animația principală de Pop (iMessage) */
-@keyframes iMessagePop {
-    0% {
-        opacity: 0;
-        transform: scale(0.6) translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-/* Alunecare ușoară pentru rând */
-@keyframes slideUp {
-    from { transform: translateY(10px); }
-    to { transform: translateY(0); }
-}
-
-/* Apariție progresivă pentru nume/sistem */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* ================== CULORI DINAMICE ================== */
-/* Bulele mele se colorează în funcție de alegere */
-.mine .bubble.blue   { background-color: #0084ff; }
-.mine .bubble.red    { background-color: #ff3b30; }
-.mine .bubble.green  { background-color: #34c759; }
-.mine .bubble.purple { background-color: #af52de; }
-.mine .bubble.orange { background-color: #ff9500; }
-.mine .bubble.black  { background-color: #1c1c1e; }
-
-/* Bulele lor pot avea și ele culori dacă serverul trimite,
-   dar iMessage păstrează de obicei mesajele primite gri.
-   Dacă vrei culori și la ei, folosește regulile de mai jos: */
-.theirs .bubble.blue   { background-color: #0084ff; color: white; }
-.theirs .bubble.red    { background-color: #ff3b30; color: white; }
-.theirs .bubble.green  { background-color: #34c759; color: white; }
-.theirs .bubble.purple { background-color: #af52de; color: white; }
-.theirs .bubble.orange { background-color: #ff9500; color: white; }
-.theirs .bubble.black  { background-color: #1c1c1e; color: white; }
-
-/* ================== INPUT ================== */
-.input-area {
-    padding: 10px;
-    background: #000;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.input-area input {
-    flex: 1;
-    padding: 12px 15px;
-    border-radius: 20px;
-    border: none;
-    background: var(--surface-color);
-    color: white;
-    font-size: 15px;
-    outline: none;
-    transition: box-shadow 0.2s ease;
-}
-
-.input-area input:focus {
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
-}
-
-.input-area button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    padding: 5px;
-    cursor: pointer;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.input-area button:active {
-    transform: scale(0.9);
-    opacity: 0.7;
-}
-
-/* ================== UTIL ================== */
-.hidden {
-    display: none !important;
-}
-
-/* ================== ANIMATIONS ================== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes popIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes slideFadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes bubblePop {
-    from {
-        transform: scale(0.96);
-    }
-    to {
-        transform: scale(1);
-    }
-}
-
-/* ================== COLOR PICKER ================== */
-/* ================== COLOR PICKER LABEL ================== */
-.color-picker-label {
-    position: absolute;
-    bottom: 78px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 13px;
-    color: var(--text-muted);
-    z-index: 1001;
-}
-/* ================== COLOR PICKER (LOGIN ONLY) ================== */
-.color-picker {
-    position: absolute;
-    bottom: 40px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    z-index: 1001;
-}
-
+/* COLOR PICKER */
+.color-picker-container { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 2003; }
+.color-picker-label { color: var(--text-muted); font-size: 14px; letter-spacing: 0.5px; }
+.color-picker { display: flex; justify-content: center; gap: 15px; }
 .color-option {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
+    transition: transform 0.2s; position: relative; z-index: 2100;
 }
+.color-option.selected { border-color: white; transform: scale(1.15); }
 
-.color-option.selected {
-    border-color: white;
-}
-
-/* Disabled after login */
-.color-picker.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-}
-
-.color-option {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-}
-
-.color-option.selected {
-    border-color: white;
-}
-
-/* Culori */
+/* CULORI */
 .color-option.blue { background: #2196f3; }
 .color-option.red { background: #f44336; }
 .color-option.green { background: #4caf50; }
@@ -415,20 +60,104 @@ body {
 .color-option.orange { background: #ff9800; }
 .color-option.white { background: #ffffff; }
 
-/* ================== BUBBLE COLORS ================== */
-.bubble.blue { background: #2196f3; }
-.bubble.red { background: #f44336; }
-.bubble.green { background: #4caf50; }
-.bubble.purple { background: #9c27b0; }
-.bubble.orange { background: #ff9800; }
-.bubble.white {
-    background: #ffffff;
-    color: #000000;
-}
+/* CHAT SCREEN */
+#chat-screen { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 10; }
+.header { padding: 15px; padding-top: calc(15px + env(safe-area-inset-top)); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #000; z-index: 50; }
+.header-title { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 16px; color: white; }
+.online-count { font-weight: normal; font-size: 13px; color: #0084ff; cursor: pointer; padding: 5px; transition: opacity 0.2s; }
+.online-count:active { opacity: 0.5; }
+.status-indicator { width: 10px; height: 10px; background: #555; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.connected { background: #00c853; }
 
-/* Color picker disabled after login */
-.color-picker.disabled {
-    opacity: 0.4;
+#messages-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 4px; background-color: #000000; }
+.message-row { display: flex; flex-direction: column; width: 100%; margin-bottom: 2px; animation: slideUp 0.3s ease-out; }
+.message-row.mine { align-items: flex-end; }
+.message-row.theirs { align-items: flex-start; }
+.sender-name { font-size: 11px; color: #999; margin: 4px 12px 2px; opacity: 0; animation: fadeIn 0.4s ease forwards; animation-delay: 0.1s; }
+.mine .sender-name { display: none; }
+
+/* BUBBLES */
+.bubble { padding: 10px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; max-width: 75%; word-wrap: break-word; position: relative; color: white; animation: iMessagePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.mine .bubble { border-bottom-right-radius: 4px; transform-origin: bottom right; }
+.theirs .bubble { border-bottom-left-radius: 4px; transform-origin: bottom left; }
+.system-msg { align-self: center; font-size: 12px; color: #8e8e93; margin: 12px 0; background: rgba(0, 0, 0, 0.05); padding: 5px 12px; border-radius: 12px; animation: fadeIn 0.5s ease forwards; }
+
+.mine .bubble.blue { background-color: #0084ff; }
+.mine .bubble.red { background-color: #ff3b30; }
+.mine .bubble.green { background-color: #34c759; }
+.mine .bubble.purple { background-color: #af52de; }
+.mine .bubble.orange { background-color: #ff9500; }
+.mine .bubble.white { background-color: white; color: black; }
+.theirs .bubble.blue { background-color: #0084ff; color: white; }
+.theirs .bubble.red { background-color: #ff3b30; color: white; }
+.theirs .bubble.green { background-color: #34c759; color: white; }
+.theirs .bubble.purple { background-color: #af52de; color: white; }
+.theirs .bubble.orange { background-color: #ff9500; color: white; }
+.theirs .bubble.white { background-color: white; color: black; }
+.theirs .bubble { background-color: #262626; color: white; }
+
+.input-area { padding: 10px; background: #000; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; z-index: 50; }
+.input-area input { flex: 1; padding: 12px 15px; border-radius: 20px; border: none; background: var(--surface-color); color: white; font-size: 15px; outline: none; }
+.input-area button { background: none; border: none; color: white; font-size: 20px; padding: 5px; cursor: pointer; }
+.hidden { display: none !important; }
+
+/* MODAL FIX */
+.modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 3000;
+    align-items: center; justify-content: center;
     pointer-events: none;
 }
+.modal-overlay.open { display: flex !important; pointer-events: auto; }
+.modal-content { background: var(--ios-gray); width: 85%; max-width: 320px; border-radius: 20px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
+.modal-header { padding: 15px 20px; border-bottom: 1px solid var(--ios-separator); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { color: white; font-size: 17px; font-weight: 600; }
+.modal-header button { background: none; border: none; color: #8e8e93; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; background: rgba(255,255,255,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+#users-list-container { max-height: 300px; overflow-y: auto; padding: 10px 0; }
+.user-item { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border-color); }
+.user-item:last-child { border-bottom: none; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #0084ff; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; margin-right: 12px; }
+.user-info { display: flex; flex-direction: column; }
+.user-name-list { font-size: 16px; color: white; }
+.user-status-list { font-size: 12px; color: var(--text-muted); }
+.modal-footer { padding: 12px; text-align: center; background: rgba(0,0,0,0.2); }
+.modal-hint { font-size: 11px; color: #666; }
 
+@keyframes iMessagePop { 0% { opacity: 0; transform: scale(0.6) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes slideUp { from { transform: translateY(10px); } to { transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUpModal { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+/* ==========================================================
+   ANIMAȚIE PULSARE BUTON (ALBASTRU -> NEGRU)
+   ========================================================== */
+@keyframes pulse-button-blue-black {
+    0% {
+        background-color: #0084ff;
+        border-color: #0084ff;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.7);
+    }
+    50% {
+        background-color: #111111; /* Negru */
+        border-color: #333333;
+        transform: scale(1.05);
+        box-shadow: 0 0 15px 5px rgba(0, 132, 255, 0.4);
+    }
+    100% {
+        background-color: #0084ff;
+        border-color: #0084ff;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0);
+    }
+}
+
+/* Această clasă se aplică DOAR butonului din JS */
+.pulsing-button-mode {
+    animation: pulse-button-blue-black 1.5s infinite ease-in-out !important;
+}

@@ -2,55 +2,68 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AirChat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AirChat Local</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ECRAN LOGIN -->
 <div id="login-screen">
     <div class="login-box">
         <h1>AirChat</h1>
         <input type="text" id="username-input" placeholder="Scrie aici numele tău" autocomplete="off">
-        <button onclick="login()">Conectare</button>
+        <button id="login-btn">Conectare</button>
     </div>
 
-    <div class="color-picker-label">
-        Alege culoarea pentru mesajele tale:
-    </div>
-
-    <div class="color-picker">
-        <div class="color-option blue selected" data-color="blue"></div>
-        <div class="color-option red" data-color="red"></div>
-        <div class="color-option green" data-color="green"></div>
-        <div class="color-option purple" data-color="purple"></div>
-        <div class="color-option orange" data-color="orange"></div>
-        <div class="color-option white" data-color="white"></div>
-    </div>
-</div>
-
-
-<!-- CHAT -->
-<div id="chat-screen" class="hidden">
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-title">
-            <div class="status-indicator" id="status-dot"></div>
-            <span id="online-count" class="online-count">0 online</span>
+    <div class="color-picker-container">
+        <div class="color-picker-label">Alege culoarea pentru mesajele tale</div>
+        <div class="color-picker">
+            <div class="color-option blue selected" data-color="blue"></div>
+            <div class="color-option red" data-color="red"></div>
+            <div class="color-option green" data-color="green"></div>
+            <div class="color-option purple" data-color="purple"></div>
+            <div class="color-option orange" data-color="orange"></div>
+            <div class="color-option white" data-color="white"></div>
         </div>
     </div>
+</div>
 
-    <!-- MESSAGES -->
+<!-- ECRAN CHAT -->
+<div id="chat-screen" class="hidden">
+    <div class="header">
+        <div class="header-title">
+            <div id="status-dot" class="status-indicator"></div>
+            Ești online!
+        </div>
+        <div id="online-count" class="online-count clickable">0 online</div>
+    </div>
+
     <div id="messages-list"></div>
 
-    <!-- INPUT -->
     <div class="input-area">
-        <input type="text" id="msg-input" placeholder="Scrie un mesaj...">
-        <button onclick="sendMessage()">➤</button>
+        <input type="text" id="msg-input" placeholder="Trimite un mesaj">
+        <button id="send-btn">➤</button>
     </div>
 </div>
+
+<!-- MODAL LISTA UTILIZATORI (iOS STYLE) -->
+<!-- NU mai avem clasa 'hidden', este ascuns din CSS direct -->
+<div id="users-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Utilizatori Activi</h3>
+            <button id="close-modal-btn">✕</button>
+        </div>
+        <div id="users-list-container">
+            <!-- Lista va fi generată din JS -->
+        </div>
+        <div class="modal-footer">
+            <span class="modal-hint">Lista se bazează pe activitatea recentă</span>
+        </div>
+    </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
