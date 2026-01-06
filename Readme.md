@@ -7,9 +7,13 @@ Este soluția pentru situațiile de criză, drumeții în zone izolate sau aglom
 ## 🌟 De ce AirChat?
 
 ⛔ **Zero Internet:** Funcționează 100% în Airplane Mode sau în zonele fără semnal GSM/4G/5G.
+
 🍎 **Universal:** Prietenii tăi cu iPhone, Laptop sau tablete **NU** trebuie să instaleze nicio aplicație. Ei se conectează la tine folosind doar browserul (Safari/Chrome).
+
 🕸️ **Mesh Networking:** Telefoanele Android se pot descoperi și conecta între ele automat, extinzând raza de acțiune a rețelei.
+
 ⚡ **Real-Time:** Folosește WebSockets pentru o comunicare instantanee și fluidă.
+
 🔒 **Privacy First:** Datele nu părăsesc niciodată rețeaua locală creată de telefoane. Nu există cloud, nu există tracking, nu există baze de date externe.
 
 ## 📸 Screenshots
