@@ -6,13 +6,13 @@
     <title>AirChat</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="main-body"> <!-- Am pus ID pe body pentru shake -->
 
 <!-- ECRAN LOGIN -->
 <div id="login-screen">
     <div class="login-box">
         <h1>AirChat</h1>
-        <input type="text" id="username-input" placeholder="Scrie numele tău:" autocomplete="off">
+        <input type="text" id="username-input" placeholder="Numele tău" autocomplete="off">
         <button id="login-btn">Conectare</button>
     </div>
 
@@ -26,8 +26,6 @@
             <div class="color-option orange" data-color="orange"></div>
             <div class="color-option white" data-color="white"></div>
         </div>
-
-        <!-- AICI ESTE CREDITUL -->
         <div class="footer-credit">Made with ❤️ by SkiDropz</div>
     </div>
 </div>
@@ -56,12 +54,18 @@
 
         <!-- INPUT AREA -->
         <div class="input-area">
+            <!-- Butonul AGRAFA -->
             <button id="photo-btn" aria-label="Atașează">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
             </button>
+
+            <!-- Butonul BUZZ (NOU) -->
+            <button id="buzz-btn" aria-label="Buzz">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </button>
+
             <input type="file" id="file-input" accept="image/*" style="display: none;">
+
             <input type="text" id="msg-input" placeholder="Scrie un mesaj...">
             <button id="send-btn">➤</button>
         </div>
@@ -72,7 +76,7 @@
 <div id="users-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Utilizatori activi</h3>
+            <h3>Utilizatori Activi</h3>
             <button id="close-modal-btn">✕</button>
         </div>
         <div id="users-list-container"></div>

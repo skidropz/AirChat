@@ -2,16 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- RETEA SI WIFI -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+
+    <!-- BLUETOOTH (MESH) -->
+    <!-- Pentru Android 12+ -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- Pentru Android mai vechi -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!-- LOCATIE (NECESAR PENTRU DISCOVERY) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- NOILE PERMISIUNI (FIX PENTRU CRASH SI FUNCTIONALITATI) -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- FIX CRASH BUZZ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Notificari Android 13+ -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Compatibilitate Web -->
 
     <application
         android:allowBackup="true"

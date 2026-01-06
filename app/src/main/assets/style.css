@@ -27,8 +27,6 @@ body {
 .login-box { text-align: center; width: 80%; max-width: 320px; animation: popIn 0.35s ease; position: relative; z-index: 2002; margin-bottom: 100px; }
 .login-box h1 { margin-bottom: 30px; color: white; font-size: 32px; letter-spacing: 1px; }
 .login-box input { width: 100%; padding: 15px; border-radius: 30px; border: 1px solid var(--border-color); background: var(--surface-color); color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
-
-/* BUTON LOGIN */
 .login-box button {
     width: 100%; padding: 12px; border-radius: 30px;
     border: 1px solid #0084ff; background: #0084ff;
@@ -39,13 +37,7 @@ body {
 .login-box button:active { transform: scale(0.97); opacity: 0.9; }
 
 /* COLOR PICKER */
-.color-picker-container {
-    position: absolute;
-    bottom: 30px; /* Ușor ajustat */
-    left: 0; right: 0;
-    display: flex; flex-direction: column; align-items: center; gap: 15px;
-    z-index: 2003;
-}
+.color-picker-container { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 2003; }
 .color-picker-label { color: var(--text-muted); font-size: 14px; letter-spacing: 0.5px; }
 .color-picker { display: flex; justify-content: center; gap: 15px; }
 .color-option { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; position: relative; z-index: 2100; }
@@ -56,14 +48,7 @@ body {
 .color-option.purple { background: #9c27b0; }
 .color-option.orange { background: #ff9800; }
 .color-option.white { background: #ffffff; }
-
-/* CREDIT TEXT */
-.footer-credit {
-    font-size: 11px;
-    color: #666;
-    margin-top: 10px;
-    opacity: 0.8;
-}
+.footer-credit { font-size: 11px; color: #666; margin-top: 10px; opacity: 0.8; }
 
 /* CHAT SCREEN */
 #chat-screen { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 10; }
@@ -73,10 +58,7 @@ body {
 .online-count:active { opacity: 0.5; }
 .status-indicator { width: 10px; height: 10px; background: #555; border-radius: 50%; display: inline-block; margin-right: 4px; }
 .connected { background: #00c853; }
-
-#disconnect-btn {
-    background: transparent; border: 1px solid #ff3b30; color: #ff3b30; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.2s;
-}
+#disconnect-btn { background: transparent; border: 1px solid #ff3b30; color: #ff3b30; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
 #disconnect-btn:active { background: rgba(255, 59, 48, 0.15); }
 
 #messages-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 4px; background-color: #000000; scroll-behavior: smooth; }
@@ -114,31 +96,10 @@ body {
 .reply-from-name { font-weight: bold; margin-bottom: 2px; }
 .reply-original-text { font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
 
-/* --- SEEN LABEL (FIXAT) --- */
-.seen-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    margin-left: 12px;
-    margin-right: 12px;
-    opacity: 0.8;
-    max-width: 70%;
-    /* Am scos 'align-self' și 'text-align' de aici ca să nu forțeze dreapta */
-}
+.seen-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; margin-left: 12px; margin-right: 12px; opacity: 0.8; max-width: 70%; }
+.message-row.mine .seen-label { align-self: flex-end; text-align: right; }
+.message-row.theirs .seen-label { align-self: flex-start; text-align: left; }
 
-/* Dacă mesajul e al meu (.mine), eticheta stă în DREAPTA */
-.message-row.mine .seen-label {
-    align-self: flex-end;
-    text-align: right;
-}
-
-/* Dacă mesajul e al lor (.theirs), eticheta stă în STÂNGA */
-.message-row.theirs .seen-label {
-    align-self: flex-start;
-    text-align: left;
-}
-
-@keyframes highlight-flash { 0% { background-color: rgba(0, 132, 255, 0.0); } 20% { background-color: rgba(0, 132, 255, 0.3); } 100% { background-color: rgba(0, 132, 255, 0.0); } }
 .highlight-message { animation: highlight-flash 1s ease-out; border-radius: 10px; }
 
 .image-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -157,19 +118,57 @@ body {
 .input-area { padding: 10px; display: flex; align-items: center; gap: 10px; }
 .input-area input { flex: 1; padding: 12px 15px; border-radius: 20px; border: none; background: var(--surface-color); color: white; font-size: 15px; outline: none; }
 .input-area button { background: none; border: none; color: white; font-size: 20px; padding: 5px; cursor: pointer; }
-#photo-btn { padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s; }
-#photo-btn:active { background-color: #333; }
+#photo-btn, #buzz-btn { padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s; }
+#photo-btn:active, #buzz-btn:active { background-color: #333; }
 .hidden { display: none !important; }
 
-/* MODAL */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 3000; align-items: center; justify-content: center; }
-.modal-overlay.open { display: flex !important; animation: modalFadeIn 0.3s forwards; }
-.modal-content { background: var(--ios-gray); width: 85%; max-width: 320px; border-radius: 20px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: scale(0.9); }
-.modal-overlay.open .modal-content { animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+/* =========================================
+   MODAL UTILIZATORI - FIX ANIMATIE
+   ========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 3000;
+    align-items: center; justify-content: center;
+}
 
-@keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modalPopIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+/* Cand este deschis, aplicam animatia de FADE IN pe fundal */
+.modal-overlay.open {
+    display: flex !important;
+    animation: modalFadeIn 0.3s forwards;
+}
 
+.modal-content {
+    background: var(--ios-gray);
+    width: 85%; max-width: 320px;
+    border-radius: 20px; padding: 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    /* Stare initiala: invizibil si mic */
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* Cand este deschis, aplicam animatia de POP IN pe fereastra */
+.modal-overlay.open .modal-content {
+    animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards;
+}
+
+/* DEFINIRE KEYFRAMES EXPLICITE */
+@keyframes modalFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Restul stilurilor modal */
 .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--ios-separator); display: flex; justify-content: space-between; align-items: center; }
 .modal-header h3 { color: white; font-size: 17px; font-weight: 600; }
 .modal-header button { background: none; border: none; color: #8e8e93; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; background: rgba(255,255,255,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
@@ -189,3 +188,6 @@ body {
 @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 @keyframes pulse-button-blue-black { 0% { background-color: var(--dynamic-btn-color, #0084ff); border-color: var(--dynamic-btn-color, #0084ff); transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.7); } 50% { background-color: #111111; border-color: #333333; transform: scale(1.05); box-shadow: 0 0 15px 5px rgba(0, 132, 255, 0.4); } 100% { background-color: var(--dynamic-btn-color, #0084ff); border-color: var(--dynamic-btn-color, #0084ff); transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 132, 255, 0); } }
 .pulsing-button-mode { animation: pulse-button-blue-black 1.5s infinite ease-in-out !important; }
+@keyframes highlight-flash { 0% { background-color: rgba(0, 132, 255, 0.0); } 20% { background-color: rgba(0, 132, 255, 0.3); } 100% { background-color: rgba(0, 132, 255, 0.0); } }
+@keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+.shaking { animation: shake 0.5s; animation-iteration-count: 1; }

@@ -17,6 +17,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.format.Formatter
 import android.util.Log
 import android.view.WindowManager
@@ -55,7 +57,6 @@ class MainActivity : AppCompatActivity(), WebServerListener {
     private val CHANNEL_ID = "airchat_discovery_channel"
     private val NOTIFICATION_ID = 1001
 
-    // --- PENTRU UPLOAD POZE ÎN WEBVIEW ---
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
     private val FILE_CHOOSER_RESULT_CODE = 100
 
@@ -137,9 +138,26 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         runOnUiThread { findViewById<WebView>(R.id.webView).evaluateJavascript("stopPulsing();", null) }
     }
 
+    // --- BUZZ VIBRATION (FIXAT CU TRY-CATCH) ---
+    private fun triggerBuzzVibration() {
+        try {
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    @Suppress("DEPRECATION")
+                    vibrator.vibrate(500)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AirChat", "Eroare la vibrație: ${e.message}")
+        }
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Ești online!", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(CHANNEL_ID, "AirChat", NotificationManager.IMPORTANCE_HIGH)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }
@@ -158,7 +176,15 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, builder.build())
     }
 
-    override fun onMessageFromWeb(json: String) { meshManager?.sendMessage(json) }
+    override fun onMessageFromWeb(json: String) {
+        meshManager?.sendMessage(json)
+        if (json.contains("\"type\":\"buzz\"")) {
+            runOnUiThread {
+                triggerBuzzVibration()
+            }
+        }
+    }
+
     override fun onClientDisconnected() { runOnUiThread { Toast.makeText(this, "Deconectat!", Toast.LENGTH_SHORT).show() } }
 
     private fun checkAllPermissions() {
@@ -198,8 +224,6 @@ class MainActivity : AppCompatActivity(), WebServerListener {
             useWideViewPort = true
             loadWithOverviewMode = true
             cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
-
-            // IMPORTANT PENTRU ACCES FIȘIERE
             allowFileAccess = true
             allowContentAccess = true
         }
@@ -208,24 +232,11 @@ class MainActivity : AppCompatActivity(), WebServerListener {
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) { request.grant(request.resources) }
-
-            // --- FIX PENTRU UPLOAD FIȘIERE (Agrafa) ---
-            override fun onShowFileChooser(
-                webView: WebView?,
-                filePathCallback: ValueCallback<Array<Uri>>?,
-                fileChooserParams: FileChooserParams?
-            ): Boolean {
-                // Dacă avem deja o cerere activă, o anulăm
+            override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
                 fileUploadCallback?.onReceiveValue(null)
                 fileUploadCallback = filePathCallback
-
                 val intent = fileChooserParams?.createIntent()
-                try {
-                    startActivityForResult(intent!!, FILE_CHOOSER_RESULT_CODE)
-                } catch (e: Exception) {
-                    fileUploadCallback = null
-                    return false
-                }
+                try { startActivityForResult(intent!!, FILE_CHOOSER_RESULT_CODE) } catch (e: Exception) { fileUploadCallback = null; return false }
                 return true
             }
         }
@@ -233,7 +244,6 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         webView.loadUrl("http://127.0.0.1:$PORT")
     }
 
-    // --- REZULTAT SELECTIE FIȘIER ---
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == FILE_CHOOSER_RESULT_CODE) {
             fileUploadCallback?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
