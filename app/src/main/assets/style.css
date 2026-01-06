@@ -23,11 +23,7 @@ body {
 }
 
 /* LOGIN SCREEN */
-#login-screen {
-    position: fixed; inset: 0; background: #000;
-    z-index: 2000; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; animation: fadeIn 0.35s ease;
-}
+#login-screen { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.35s ease; }
 .login-box { text-align: center; width: 80%; max-width: 320px; animation: popIn 0.35s ease; position: relative; z-index: 2002; margin-bottom: 100px; }
 .login-box h1 { margin-bottom: 30px; color: white; font-size: 32px; letter-spacing: 1px; }
 .login-box input { width: 100%; padding: 15px; border-radius: 30px; border: 1px solid var(--border-color); background: var(--surface-color); color: white; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
@@ -38,27 +34,36 @@ body {
     border: 1px solid #0084ff; background: #0084ff;
     color: white; font-weight: bold; font-size: 16px; cursor: pointer;
     position: relative; z-index: 2100;
-    transition: transform 0.2s ease, background-color 0.2s;
+    transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 .login-box button:active { transform: scale(0.97); opacity: 0.9; }
 
 /* COLOR PICKER */
-.color-picker-container { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; z-index: 2003; }
+.color-picker-container {
+    position: absolute;
+    bottom: 30px; /* Ușor ajustat */
+    left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 15px;
+    z-index: 2003;
+}
 .color-picker-label { color: var(--text-muted); font-size: 14px; letter-spacing: 0.5px; }
 .color-picker { display: flex; justify-content: center; gap: 15px; }
-.color-option {
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent;
-    transition: transform 0.2s; position: relative; z-index: 2100;
-}
+.color-option { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; position: relative; z-index: 2100; }
 .color-option.selected { border-color: white; transform: scale(1.15); }
-
-/* CULORI */
 .color-option.blue { background: #2196f3; }
 .color-option.red { background: #f44336; }
 .color-option.green { background: #4caf50; }
 .color-option.purple { background: #9c27b0; }
 .color-option.orange { background: #ff9800; }
 .color-option.white { background: #ffffff; }
+
+/* CREDIT TEXT */
+.footer-credit {
+    font-size: 11px;
+    color: #666;
+    margin-top: 10px;
+    opacity: 0.8;
+}
 
 /* CHAT SCREEN */
 #chat-screen { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 10; }
@@ -69,14 +74,19 @@ body {
 .status-indicator { width: 10px; height: 10px; background: #555; border-radius: 50%; display: inline-block; margin-right: 4px; }
 .connected { background: #00c853; }
 
-#messages-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 4px; background-color: #000000; }
-.message-row { display: flex; flex-direction: column; width: 100%; margin-bottom: 2px; animation: slideUp 0.3s ease-out; }
+#disconnect-btn {
+    background: transparent; border: 1px solid #ff3b30; color: #ff3b30; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.2s;
+}
+#disconnect-btn:active { background: rgba(255, 59, 48, 0.15); }
+
+#messages-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 4px; background-color: #000000; scroll-behavior: smooth; }
+
+.message-row { display: flex; flex-direction: column; width: 100%; margin-bottom: 6px; animation: slideUp 0.3s ease-out; touch-action: pan-y; transition: transform 0.2s ease-out; position: relative; }
 .message-row.mine { align-items: flex-end; }
 .message-row.theirs { align-items: flex-start; }
 .sender-name { font-size: 11px; color: #999; margin: 4px 12px 2px; opacity: 0; animation: fadeIn 0.4s ease forwards; animation-delay: 0.1s; }
 .mine .sender-name { display: none; }
 
-/* BUBBLES */
 .bubble { padding: 10px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; max-width: 75%; word-wrap: break-word; position: relative; color: white; animation: iMessagePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .mine .bubble { border-bottom-right-radius: 4px; transform-origin: bottom right; }
 .theirs .bubble { border-bottom-left-radius: 4px; transform-origin: bottom left; }
@@ -96,23 +106,49 @@ body {
 .theirs .bubble.white { background-color: white; color: black; }
 .theirs .bubble { background-color: #262626; color: white; }
 
-.input-area { padding: 10px; background: #000; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; z-index: 50; }
+.chat-image { width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin-top: 5px; margin-bottom: 5px; display: block; cursor: zoom-in; transition: transform 0.1s; }
+.chat-image:active { transform: scale(0.97); }
+.bubble.has-image { padding: 4px; }
+
+.reply-preview-in-message { border-left: 2px solid rgba(255,255,255,0.5); padding-left: 8px; margin-bottom: 6px; font-size: 11px; opacity: 0.8; background: rgba(0,0,0,0.1); border-radius: 4px; padding: 4px 8px; display: flex; flex-direction: column; cursor: pointer; }
+.reply-from-name { font-weight: bold; margin-bottom: 2px; }
+.reply-original-text { font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+.seen-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; margin-left: 12px; margin-right: 12px; opacity: 0.8; max-width: 70%; text-align: right; align-self: flex-end; }
+.theirs + .seen-label { align-self: flex-start; text-align: left; }
+
+@keyframes highlight-flash { 0% { background-color: rgba(0, 132, 255, 0.0); } 20% { background-color: rgba(0, 132, 255, 0.3); } 100% { background-color: rgba(0, 132, 255, 0.0); } }
+.highlight-message { animation: highlight-flash 1s ease-out; border-radius: 10px; }
+
+.image-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 4000; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.image-overlay.active { display: flex !important; animation: fadeIn 0.3s ease; }
+#full-image { max-width: 100%; max-height: 100%; object-fit: contain; transform: scale(0.8); opacity: 0; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; }
+.image-overlay.active #full-image { transform: scale(1); opacity: 1; }
+#close-image-btn { position: absolute; top: 40px; right: 20px; color: white; font-size: 30px; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 4001; }
+
+.input-container-wrapper { background: #000; border-top: 1px solid var(--border-color); z-index: 50; display: flex; flex-direction: column; }
+#reply-bar { background: #1c1c1e; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; animation: slideUp 0.2s ease; }
+.reply-content { display: flex; flex-direction: column; font-size: 12px; color: #ccc; overflow: hidden; }
+.reply-title b { color: #0084ff; }
+.reply-text-preview { font-style: italic; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80vw; }
+#close-reply-btn { background: none; border: none; color: #888; font-size: 18px; padding: 5px; cursor: pointer; }
+
+.input-area { padding: 10px; display: flex; align-items: center; gap: 10px; }
 .input-area input { flex: 1; padding: 12px 15px; border-radius: 20px; border: none; background: var(--surface-color); color: white; font-size: 15px; outline: none; }
 .input-area button { background: none; border: none; color: white; font-size: 20px; padding: 5px; cursor: pointer; }
+#photo-btn { padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background-color 0.2s; }
+#photo-btn:active { background-color: #333; }
 .hidden { display: none !important; }
 
-/* MODAL FIX */
-.modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 3000;
-    align-items: center; justify-content: center;
-    pointer-events: none;
-}
-.modal-overlay.open { display: flex !important; pointer-events: auto; }
-.modal-content { background: var(--ios-gray); width: 85%; max-width: 320px; border-radius: 20px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 3000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex !important; animation: modalFadeIn 0.3s forwards; }
+.modal-content { background: var(--ios-gray); width: 85%; max-width: 320px; border-radius: 20px; padding: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; opacity: 0; transform: scale(0.9); }
+.modal-overlay.open .modal-content { animation: modalPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+@keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalPopIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
 .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--ios-separator); display: flex; justify-content: space-between; align-items: center; }
 .modal-header h3 { color: white; font-size: 17px; font-weight: 600; }
 .modal-header button { background: none; border: none; color: #8e8e93; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; background: rgba(255,255,255,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
@@ -130,34 +166,5 @@ body {
 @keyframes slideUp { from { transform: translateY(10px); } to { transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleUpModal { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-
-/* ==========================================================
-   ANIMAȚIE PULSARE BUTON (ALBASTRU -> NEGRU)
-   ========================================================== */
-@keyframes pulse-button-blue-black {
-    0% {
-        background-color: #0084ff;
-        border-color: #0084ff;
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.7);
-    }
-    50% {
-        background-color: #111111; /* Negru */
-        border-color: #333333;
-        transform: scale(1.05);
-        box-shadow: 0 0 15px 5px rgba(0, 132, 255, 0.4);
-    }
-    100% {
-        background-color: #0084ff;
-        border-color: #0084ff;
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(0, 132, 255, 0);
-    }
-}
-
-/* Această clasă se aplică DOAR butonului din JS */
-.pulsing-button-mode {
-    animation: pulse-button-blue-black 1.5s infinite ease-in-out !important;
-}
+@keyframes pulse-button-blue-black { 0% { background-color: var(--dynamic-btn-color, #0084ff); border-color: var(--dynamic-btn-color, #0084ff); transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.7); } 50% { background-color: #111111; border-color: #333333; transform: scale(1.05); box-shadow: 0 0 15px 5px rgba(0, 132, 255, 0.4); } 100% { background-color: var(--dynamic-btn-color, #0084ff); border-color: var(--dynamic-btn-color, #0084ff); transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 132, 255, 0); } }
+.pulsing-button-mode { animation: pulse-button-blue-black 1.5s infinite ease-in-out !important; }

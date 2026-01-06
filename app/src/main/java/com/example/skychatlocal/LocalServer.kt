@@ -4,6 +4,7 @@ import android.content.Context
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoWSD
 import java.io.IOException
+import java.util.LinkedList
 
 class LocalServer(
     private val context: Context,
@@ -14,7 +15,10 @@ class LocalServer(
     // Lista clienților WebSocket conectați
     private val webSocketSockets = mutableListOf<WebSocket>()
 
-    // FĂRĂ INIT BLOCK, FĂRĂ CERTIFICAT, FĂRĂ SSL
+    // --- ISTORIC MESAJE ---
+    // Păstrăm ultimele 50 de mesaje sub formă de JSON String
+    private val messageHistory = LinkedList<String>()
+    private val MAX_HISTORY = 50
 
     override fun openWebSocket(handshake: IHTTPSession): WebSocket {
         return AirChatWebSocket(this, handshake)
@@ -40,7 +44,17 @@ class LocalServer(
         }
     }
 
+    // Această funcție trimite mesajul tuturor ȘI îl salvează în istoric
     fun broadcastToAll(message: String) {
+        // 1. Salvăm în istoric
+        synchronized(messageHistory) {
+            if (messageHistory.size >= MAX_HISTORY) {
+                messageHistory.removeFirst() // Ștergem cel mai vechi mesaj dacă am depășit limita
+            }
+            messageHistory.add(message)
+        }
+
+        // 2. Trimitem către toți clienții conectați
         val deadSockets = mutableListOf<WebSocket>()
         synchronized(webSocketSockets) {
             for (ws in webSocketSockets) {
@@ -61,6 +75,18 @@ class LocalServer(
 
         override fun onOpen() {
             synchronized(server.webSocketSockets) { server.webSocketSockets.add(this) }
+
+            // --- SINCRONIZARE ISTORIC ---
+            // Când un client nou intră, îi trimitem tot istoricul
+            synchronized(server.messageHistory) {
+                for (oldMessage in server.messageHistory) {
+                    try {
+                        this.send(oldMessage)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
         }
 
         override fun onClose(code: WebSocketFrame.CloseCode?, reason: String?, initiatedByRemote: Boolean) {
@@ -72,7 +98,11 @@ class LocalServer(
 
         override fun onMessage(message: WebSocketFrame) {
             val text = message.textPayload
+
+            // Trimitem la Activity (ca să plece și în Mesh)
             server.listener.onMessageFromWeb(text)
+
+            // Trimitem la ceilalți clienți Web (și salvăm în istoric automat prin broadcastToAll)
             server.broadcastToAll(text)
         }
 

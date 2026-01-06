@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.ToneGenerator
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +21,7 @@ import android.text.format.Formatter
 import android.util.Log
 import android.view.WindowManager
 import android.webkit.PermissionRequest
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -52,6 +54,10 @@ class MainActivity : AppCompatActivity(), WebServerListener {
     private val PORT = 8080
     private val CHANNEL_ID = "airchat_discovery_channel"
     private val NOTIFICATION_ID = 1001
+
+    // --- PENTRU UPLOAD POZE ÎN WEBVIEW ---
+    private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
+    private val FILE_CHOOSER_RESULT_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -102,7 +108,6 @@ class MainActivity : AppCompatActivity(), WebServerListener {
         } catch (e: Exception) { Toast.makeText(this, "Err: ${e.message}", Toast.LENGTH_LONG).show() }
 
         val ipAddress = getSmartIpAddress()
-        // SCHIMBARE: HTTP simplu
         val url = "http://$ipAddress:$PORT"
         ipText.text = url
 
@@ -134,7 +139,7 @@ class MainActivity : AppCompatActivity(), WebServerListener {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "AirChat", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(CHANNEL_ID, "Ești online!", NotificationManager.IMPORTANCE_HIGH)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }
@@ -193,21 +198,49 @@ class MainActivity : AppCompatActivity(), WebServerListener {
             useWideViewPort = true
             loadWithOverviewMode = true
             cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
+
+            // IMPORTANT PENTRU ACCES FIȘIERE
+            allowFileAccess = true
+            allowContentAccess = true
         }
 
-        // SCHIMBARE: Nu mai avem nevoie de SSL Error Handler
         webView.webViewClient = WebViewClient()
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) { request.grant(request.resources) }
-            override fun onConsoleMessage(message: android.webkit.ConsoleMessage?): Boolean {
-                Log.d("WebViewConsole", "${message?.message()}")
+
+            // --- FIX PENTRU UPLOAD FIȘIERE (Agrafa) ---
+            override fun onShowFileChooser(
+                webView: WebView?,
+                filePathCallback: ValueCallback<Array<Uri>>?,
+                fileChooserParams: FileChooserParams?
+            ): Boolean {
+                // Dacă avem deja o cerere activă, o anulăm
+                fileUploadCallback?.onReceiveValue(null)
+                fileUploadCallback = filePathCallback
+
+                val intent = fileChooserParams?.createIntent()
+                try {
+                    startActivityForResult(intent!!, FILE_CHOOSER_RESULT_CODE)
+                } catch (e: Exception) {
+                    fileUploadCallback = null
+                    return false
+                }
                 return true
             }
         }
 
-        // SCHIMBARE: HTTP
         webView.loadUrl("http://127.0.0.1:$PORT")
+    }
+
+    // --- REZULTAT SELECTIE FIȘIER ---
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == FILE_CHOOSER_RESULT_CODE) {
+            fileUploadCallback?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
+            fileUploadCallback = null
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun dpToPx(dp: Int) = (dp * resources.displayMetrics.density).roundToInt()
