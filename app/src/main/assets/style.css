@@ -114,8 +114,29 @@ body {
 .reply-from-name { font-weight: bold; margin-bottom: 2px; }
 .reply-original-text { font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
 
-.seen-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; margin-left: 12px; margin-right: 12px; opacity: 0.8; max-width: 70%; text-align: right; align-self: flex-end; }
-.theirs + .seen-label { align-self: flex-start; text-align: left; }
+/* --- SEEN LABEL (FIXAT) --- */
+.seen-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    margin-left: 12px;
+    margin-right: 12px;
+    opacity: 0.8;
+    max-width: 70%;
+    /* Am scos 'align-self' și 'text-align' de aici ca să nu forțeze dreapta */
+}
+
+/* Dacă mesajul e al meu (.mine), eticheta stă în DREAPTA */
+.message-row.mine .seen-label {
+    align-self: flex-end;
+    text-align: right;
+}
+
+/* Dacă mesajul e al lor (.theirs), eticheta stă în STÂNGA */
+.message-row.theirs .seen-label {
+    align-self: flex-start;
+    text-align: left;
+}
 
 @keyframes highlight-flash { 0% { background-color: rgba(0, 132, 255, 0.0); } 20% { background-color: rgba(0, 132, 255, 0.3); } 100% { background-color: rgba(0, 132, 255, 0.0); } }
 .highlight-message { animation: highlight-flash 1s ease-out; border-radius: 10px; }
