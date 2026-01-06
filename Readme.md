@@ -9,21 +9,27 @@ Este soluția ideală pentru situații de criză, drumeții în zone izolate, fe
 ## De ce AirChat?
 
 ⛔ **Zero Internet**
+
 Funcționează 100% în **Airplane Mode** sau în zone fără orice fel de semnal.
 
 🍎 **Universal**
+
 Prietenii tăi cu **iPhone, laptop sau tabletă** NU trebuie să instaleze nicio aplicație. Se conectează direct din browser (Safari / Chrome).
 
 🕸️ **Hybrid Mesh Networking**
+
 Telefoanele Android se descoperă automat între ele prin Bluetooth și formează o rețea Mesh, extinzând raza de acțiune.
 
 🎙️ **Walkie-Talkie & Survival**
+
 Include mesaje vocale, busolă pentru localizarea prietenilor și alerte haptice, precum cea pentru buzz.
 
 ⚡ **Real-Time Communication**
+
 Mesaje instant folosind **WebSockets**, cu sincronizare bidirecțională Mesh ↔ Web.
 
 🔒 **Privacy-First**
+
 Fără cloud, fără conturi, fără tracking. Datele **nu părăsesc niciodată rețeaua locală**!
 
 ---
