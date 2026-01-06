@@ -1,5 +1,5 @@
 
-# AirChat v2.0
+# AirChat
 
 **AirChat** este o aplicație avansată de comunicare **peer-to-peer**, care funcționează **fără internet**, transformând un telefon Android într-un **hub de comunicații locale și Mesh**.
 
@@ -33,6 +33,7 @@ Fără cloud, fără conturi, fără tracking. Datele **nu părăsesc niciodată
     <img src="https://github.com/skidropz/AirChat/blob/main/Chatul.png" alt="Codul QR" width="300">
 <img src="https://github.com/skidropz/AirChat/blob/main/Codul%20QR.png" alt="Chat" width="300">
   <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20din%20browser.png" alt="Listă useri activi" width="300">
+      <img src="https://github.com/skidropz/AirChat/blob/main/Chatul%20din%20browser.png" alt="Listă useri activi" width="300">
   <img src="https://github.com/skidropz/AirChat/blob/main/Lista%CC%86%20utilizatori.png" alt="Interfața din browser" width="300">
   <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%CC%86%20Mesh.png" alt="Interfață Mesh" width="300">
 </p>
