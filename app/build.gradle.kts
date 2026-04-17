@@ -32,8 +32,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
@@ -65,5 +68,7 @@ dependencies {
     // NanoHTTPD WebSocket (pentru chat în timp real)
     implementation("org.nanohttpd:nanohttpd-websocket:2.3.1")
     implementation("com.google.zxing:core:3.5.1")
-
+    
+    // Tink pentru criptare nativa Android
+    implementation("com.google.crypto.tink:tink-android:1.8.0")
 }

@@ -1,195 +1,80 @@
 # 📡 AirChat
 
-AirChat is a Romanian peer-to-peer communication app that works without internet, turning an Android phone into a local and Mesh communication hub.
+AirChat is an offline, peer-to-peer messaging app built for Android. It basically turns your phone into a portable communication hub that works completely without the internet. 
 
-It is the ideal solution for crisis situations, hiking in remote areas, festivals, protests, or crowded urban environments where networks are unavailable or overloaded.
+I originally built this for situations where networks are either dead or completely overloaded—think hiking in the mountains, packed music festivals, protests, or power outages.
 
 ---
 
-# Why AirChat?
+### Why use AirChat?
 
-**⛔ Zero Internet**
+The coolest part about AirChat is that **only one person needs to have the app installed**. 
 
-Works 100% in Airplane Mode or in areas without any signal.
+If you have the app on your Android phone, your friends on iPhones, laptops, or older devices don't need to download anything. They just connect to your phone's Wi-Fi hotspot, and a "Captive Portal" pops up (just like when you connect to hotel Wi-Fi). It drops them right into the chat via their browser. 
 
-**🍎 Universal**
-
-Your friends with an iPhone, laptop, or tablet DO NOT have to install any application. They connect directly from their browser (Safari / Chrome).
-
-**🕸️ Hybrid Mesh Networking**
-
-Android phones automatically discover each other via Bluetooth and form a Mesh network, extending the communication range.
-
-**🎙️ Walkie-Talkie & Survival**
-
-Includes voice messages, a compass for locating friends, and haptic alerts, such as the buzz feature.
-
-**⚡ Real-Time Communication**
-
-Instant messaging using WebSockets, with bidirectional Mesh ↔ Web synchronization.
-
-**🔒 Privacy-First**
-
-No cloud, no accounts, no tracking. Data never leaves the local network!
+* **100% Offline:** Works in Airplane Mode or in the middle of nowhere.
+* **Viral App Sharing:** If your friend *does* want the native Android app but has no internet to get it from the Play Store, AirChat actually hosts its own `.apk`. They can download it directly from your hotspot.
+* **Hybrid Mesh Networking:** If multiple people have the Android app, the phones will find each other via Bluetooth and form a mesh network. This extends the range—Phone A can talk to Phone C by bouncing the signal through Phone B.
+* **Total Privacy (E2EE):** There are no servers, no cloud, and no accounts. Everything is encrypted end-to-end using AES-GCM (for native mesh) and WebCrypto (for browser users). Keys are passed via URL fragments (`#`) so they never touch the server in plaintext.
 
 ---
 
 ## 📸 Screenshots
 
 <p float="left">
-<img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20principala%CC%86.png" alt="Interfața principală" width="300">
-    <img src="https://github.com/skidropz/AirChat/blob/main/Chatul.png" alt="Codul QR" width="300">
-<img src="https://github.com/skidropz/AirChat/blob/main/Codul%20QR.png" alt="Chat" width="300">
-  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20din%20browser.png" alt="Listă useri activi" width="300">
-      <img src="https://github.com/skidropz/AirChat/blob/main/Chatul%20din%20browser.png" alt="Listă useri activi" width="300">
-  <img src="https://github.com/skidropz/AirChat/blob/main/Lista%CC%86%20utilizatori.png" alt="Interfața din browser" width="300">
-    <img src="https://github.com/skidropz/AirChat/blob/main/Ga%CC%86sire%20prieteni.png" alt="Interfața din browser" width="300">
-  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%CC%86%20Mesh.png" alt="Interfață Mesh" width="300">
+<img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20principala%CC%86.png" alt="Main Interface" width="300">
+    <img src="https://github.com/skidropz/AirChat/blob/main/Chatul.png" alt="Chat" width="300">
+<img src="https://github.com/skidropz/AirChat/blob/main/Codul%20QR.png" alt="QR Code" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%20din%20browser.png" alt="Browser UI" width="300">
+      <img src="https://github.com/skidropz/AirChat/blob/main/Chatul%20din%20browser.png" alt="Browser Chat" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Lista%CC%86%20utilizatori.png" alt="User List" width="300">
+    <img src="https://github.com/skidropz/AirChat/blob/main/Ga%CC%86sire%20prieteni.png" alt="Compass" width="300">
+  <img src="https://github.com/skidropz/AirChat/blob/main/Interfat%CC%A6a%CC%86%20Mesh.png" alt="Mesh Interface" width="300">
 </p>
 
 ---
 
-## 🚀 What's New in v2.0
+## 🚀 What's inside v3.0?
 
-### 🎙️ Audio & Walkie-Talkie
+I've completely overhauled how AirChat works under the hood for this release. 
 
-**Hold-to-Record**
+* **Private 1-on-1 Chats:** You're no longer restricted to the global room. You can tap on anyone's name and open a private, E2E encrypted chatroom directly inside the local network.
+* **Captive Portal Auto-Login:** I tweaked the NanoHTTPD server to intercept iOS/Android connectivity checks. Now, when people join your hotspot, their OS forces the browser open right into the chat.
+* **PWA Support:** iOS and PC users can now hit "Add to Home Screen". The app will behave exactly like a native app, hiding the Safari/Chrome UI bars.
+* **Easy PC Connection:** Scanning a QR code from a laptop webcam is awful. Now, the app generates a short 4-letter code (like `A7X2`). You just type `http://192.168.43.1:8080/A7X2` in your browser, and the server automatically redirects you and handles the crypto keys.
+* **Bulletproof Encryption:** Migrated to a custom base64 XOR/WebCrypto implementation to bypass browser security blocks on local IPs, backed by native `javax.crypto` AES-GCM for the Android mesh nodes. 
 
-Hold down the microphone to record and instantly send voice messages.
+## 🔄 Other Cool Features (from v2.1)
 
-**Custom Audio Player**
+If you haven't used AirChat before, here are some of the things already built-in:
 
-WhatsApp-style interface with a dynamically generated waveform based on sound frequencies.
-
-**Swipe-to-Cancel**
-
-Swipe left to cancel, featuring particle visual effects (sparks) and an explosion animation upon cancellation.
-
-
-### 🧭 Find My Friend
-
-**Offline Compass**
-
-Locate other network users without maps or internet.
-
-**GPS Tracking**
-
-Displays the exact distance (in meters) and a directional arrow pointing to your chat partner.
-
-**BUZZ Feature**
-
-Sends a strong haptic vibration and shakes the screen for chat participants (Yahoo! Messenger style).
-
-
-### 🕸️ Mesh Networking (Hybrid Mode)
-
-Android-to-Android Discovery via Google Nearby Connections.
-
-Messages are automatically relayed between the Mesh and Web clients.
-
-The connect button pulses (Blue ↔ Black) when a node is detected.
-
-
-### 📷 Media & Chat
-
-Image Sharing (from gallery only) with automatic compression and a Fullscreen Viewer.
-
-Swipe-to-Reply with automatic scrolling to the original message.
-
-Automatic synchronization of the last 50 messages.
-
-Smart Seen Status: "Seen by..." indicator based on the Page Visibility API (active only when the user is looking at the page).
+* **Find My Friend (Compass):** Lose your friend in a crowd? Tap their name. AirChat uses GPS and your phone's magnetometer to point a physical compass arrow in their direction, showing the exact distance in meters.
+* **Live Battery Status:** You can see the battery percentage of everyone in the chat (pulled natively on Android or via the Battery API on web). You'll know if someone is about to go offline because their phone died.
+* **Walkie-Talkie & Voice Notes:** Hold to record audio, swipe left to cancel (complete with a neat particle explosion animation). 
+* **BUZZ:** Miss the old Yahoo! Messenger days? You can "Buzz" people. It sends a strong haptic vibration and physically shakes their screen.
+* **iMessage-style UI:** Messages group together cleanly, day/night mode adapts to your OS, and standalone emojis are shown larger without the chat bubble.
 
 ---
 
-## 🎨 Modern UI / UX
+## 🛠️ How it works under the hood
 
-iOS Dark Mode Theme (Blur effects, Apple color palette, San Francisco-style font).
+AirChat relies on a dual-architecture so it can talk to anything:
 
-**Interactive UI:**
-
-Glowing particles that follow your finger while recording audio.
-
-The connect button adopts the user's chosen profile color.
-
-Fluid Animations: Pop-in, Slide-up, Fade-in.
-
-Active User List with a live counter.
+1. **Local Server Mode:** The Android host runs an embedded web server (`NanoHTTPD` + `NanoWSD` for WebSockets on Port 8080). It serves HTML/JS/CSS to web clients.
+2. **Mesh Mode:** It uses the Google Nearby Connections API (`P2P_CLUSTER` strategy). Android devices discover each other via BLE/Bluetooth and pass encrypted payloads back and forth, syncing the WebSocket histories.
 
 ---
 
-## How does AirChat work?
+## 💻 Build it yourself
 
-AirChat uses a dual hybrid architecture for maximum compatibility.
+It's a standard Android Studio project. No weird dependencies.
 
-### 1️⃣ Local Server Mode (HTTP + WebSockets)
+1. Clone the repo and open it in Android Studio.
+2. Let Gradle sync.
+3. Hit Run or Build -> Build APK(s).
 
-The Android phone starts an embedded web server.
-
-Devices (iPhone/PC/Android) connected to the hotspot access the chat via their browser.
-
-Quick login using a QR Code.
-
-
-### 2️⃣ Mesh Mode (Android ↔ Android)
-
-Direct connection via Bluetooth / BLE.
-
-Does not require a shared Wi-Fi network.
-
-Extends the network's range (Phone A <-> Phone B <-> iPhone C).
+Requires Android SDK 31+.
 
 ---
 
-## 📱 User Guide
-
-### Scenario A — Host for iPhone / Laptop / Android
-
-Disable mobile data and enable Hotspot.
-
-Open AirChat (QR code is generated automatically).
-
-Friends connect to the hotspot and scan the QR code.
-
-
-### Scenario B — Hiking / Mesh (Android ↔ Android)
-
-Both phones have AirChat installed.
-
-Bluetooth and Location services (GPS) are turned on.
-
-Bring the phones close together. The connect button will pulse → "Connecting to Mesh".
-
-If you get separated, tap on a user's name in the list to open the compass.
-
----
-
-## 🛠️ Technical Details
-
-**Language:** Kotlin (Android Native)
-
-**Server:** NanoHTTPD + NanoWSD (Port 8080, HTTP Protocol).
-
-**Frontend:** HTML5, CSS3, Vanilla JS.
-
-**Audio:** Web Audio API & MediaRecorder (Base64 encoding).
-
-**Sensors:** SensorManager (Magnetometer + Accelerometer) & LocationManager (GPS).
-
-**Security:** Plain HTTP (no SSL errors on LAN), data is volatile (RAM only).
-
----
-
-## 🛠️ Build & Install
-
-Import the project into Android Studio.
-
-Sync Gradle.
-
-Build → Build APK(s).
-
-The APK will be located in build/outputs/apk/debug.
-
----
-
-**Made with ❤️ by SkiDropz**
+*Made with ❤️ by SkiDropz*

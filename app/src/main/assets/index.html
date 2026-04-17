@@ -2,8 +2,13 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AirChat</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMwMDg0ZmYiIHJ4PSI0MCIvPjx0ZXh0IHg9Ijk2IiB5PSIxMDUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjkwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+QTwvdGV4dD48L3N2Zz4=">
     <link rel="stylesheet" href="style.css">
 </head>
 <body id="main-body">
@@ -12,12 +17,20 @@
 <div id="login-screen">
     <div class="login-box">
         <h1>AirChat</h1>
-        <input type="text" id="username-input" placeholder="Numele tău" autocomplete="off">
-        <button id="login-btn">Conectare</button>
+        <input type="text" id="username-input" data-i18n-placeholder="name_placeholder" placeholder="Numele tău" autocomplete="off">
+        <button id="login-btn" data-i18n="connect_btn">Conectare</button>
+
+        <a href="/download-app" class="download-apk-btn" data-i18n="download_apk">Ești pe Android? Descarcă aplicația nativă aici!</a>
+
+        <div class="lang-switch-wrapper">
+            <span class="lang-option active" data-lang="ro">RO</span>
+            <span class="lang-separator">|</span>
+            <span class="lang-option" data-lang="en">EN</span>
+        </div>
     </div>
 
     <div class="color-picker-container">
-        <div class="color-picker-label">Alege culoarea pentru mesajele tale</div>
+        <div class="color-picker-label" data-i18n="choose_color">Alege culoarea pentru mesajele tale</div>
         <div class="color-picker">
             <div class="color-option blue selected" data-color="blue"></div>
             <div class="color-option red" data-color="red"></div>
@@ -26,18 +39,37 @@
             <div class="color-option orange" data-color="orange"></div>
             <div class="color-option white" data-color="white"></div>
         </div>
+
+        <div class="theme-switch-wrapper">
+            <span class="theme-label">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span class="theme-label">🌙</span>
+        </div>
+
         <div class="footer-credit">Made with ❤️ by SkiDropz</div>
     </div>
 </div>
 
 <!-- ECRAN CHAT -->
 <div id="chat-screen" class="hidden">
-    <div class="header">
-        <div class="header-title">
+    <div class="header" id="main-header">
+        <div class="header-title" id="general-header-title">
             <div id="status-dot" class="status-indicator"></div>
-            <button id="disconnect-btn">Deconectare</button>
+            <button id="disconnect-btn" data-i18n="disconnect_btn">Deconectare</button>
         </div>
-        <div id="online-count" class="online-count clickable">0 online</div>
+        <div class="header-title hidden" id="private-header-title">
+            <button id="back-to-general-btn" class="icon-btn" aria-label="Înapoi">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <span id="private-target-name" style="font-weight:bold; margin-left:8px;">Nume</span>
+        </div>
+        <div class="header-right" style="position:relative;">
+            <div id="online-count" class="online-count clickable">0 online</div>
+            <div id="global-unread-badge" class="unread-badge hidden">0</div>
+        </div>
     </div>
 
     <div id="messages-list"></div>
@@ -46,7 +78,7 @@
         <!-- REPLY BAR -->
         <div id="reply-bar" class="hidden">
             <div class="reply-content">
-                <span class="reply-title">Răspuns pentru <b id="reply-target-name">...</b></span>
+                <span class="reply-title"><span data-i18n="reply_to">Răspuns pentru</span> <b id="reply-target-name">...</b></span>
                 <span class="reply-text-preview" id="reply-target-text">...</span>
             </div>
             <button id="close-reply-btn">✕</button>
@@ -56,13 +88,13 @@
         <div id="recording-overlay" class="hidden">
             <div class="rec-indicator"></div>
             <span id="rec-timer">00:00</span>
-            <span class="rec-cancel-text">Glisează la stânga pentru anulare ⬅</span>
+            <span class="rec-cancel-text" data-i18n="swipe_cancel">Glisează la stânga pentru anulare ⬅</span>
         </div>
 
         <!-- INPUT AREA -->
         <div class="input-area">
             <button id="photo-btn" aria-label="Atașează">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
             </button>
 
             <button id="buzz-btn" aria-label="Buzz">
@@ -71,10 +103,10 @@
 
             <input type="file" id="file-input" accept="image/*" style="display: none;">
 
-            <input type="text" id="msg-input" placeholder="Scrie un mesaj...">
+            <input type="text" id="msg-input" data-i18n-placeholder="type_msg" placeholder="Scrie un mesaj...">
 
             <button id="mic-btn" aria-label="Înregistrează">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
 
             <button id="send-btn" class="hidden">➤</button>
@@ -86,12 +118,12 @@
 <div id="users-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Utilizatori activi</h3>
+            <h3 data-i18n="active_users">Utilizatori activi</h3>
             <button id="close-modal-btn">✕</button>
         </div>
         <div id="users-list-container"></div>
         <div class="modal-footer">
-            <span class="modal-hint">Apasă pe un utilizator pentru localizare.</span>
+            <span class="modal-hint" data-i18n="locate_hint">Apasă pe un utilizator pentru localizare.</span>
         </div>
     </div>
 </div>
@@ -102,7 +134,7 @@
         <button id="close-compass-btn">✕</button>
 
         <div class="compass-header">
-            <h2>Îl căutăm pe</h2>
+            <h2 data-i18n="looking_for">Îl căutăm pe</h2>
             <h3 id="compass-target-name">Nume</h3>
         </div>
 
@@ -112,8 +144,8 @@
         </div>
 
         <div class="compass-info">
-            <span id="compass-distance">Calculare...</span>
-            <small>DISTANȚĂ</small>
+            <span id="compass-distance" data-i18n="calculating">Calculare...</span>
+            <small data-i18n="distance">DISTANȚĂ</small>
         </div>
     </div>
 </div>

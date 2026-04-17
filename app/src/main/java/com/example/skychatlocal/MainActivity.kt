@@ -48,6 +48,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import java.net.Inet4Address
 import java.net.NetworkInterface
+import java.security.SecureRandom
 import java.util.Collections
 import kotlin.math.roundToInt
 
@@ -80,6 +81,9 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
     private val orientationAngles = FloatArray(3)
 
     private var lastUpdate = 0L
+    private lateinit var webView: WebView
+
+    private var roomKeyBase64: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -90,13 +94,22 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
         Handler(Looper.getMainLooper()).postDelayed({ keepShowing = false }, 2000)
         setContentView(R.layout.activity_main)
 
+        // Generate E2E Room Key
+        val rawKey = ByteArray(32)
+        SecureRandom().nextBytes(rawKey)
+        roomKeyBase64 = android.util.Base64.encodeToString(rawKey, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP)
+        
+        // Generate Short Code for PC/Laptop connection
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        val shortCode = (1..4).map { chars.random() }.joinToString("")
+
         createNotificationChannel()
         toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
         checkAllPermissions()
 
         val ipText = findViewById<TextView>(R.id.ipText)
         val qrImage = findViewById<ImageView>(R.id.qrImage)
-        val webView = findViewById<WebView>(R.id.webView)
+        webView = findViewById(R.id.webView)
 
         // INIT SENSORS
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -104,7 +117,7 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        meshManager = MeshManager(this, "Node-${Build.MODEL}",
+        meshManager = MeshManager(this, "Node-${Build.MODEL}", roomKeyBase64,
             onMessageReceived = { server?.broadcastToAll(it) },
             onDeviceLost = { onClientDisconnected() },
             onPeerFound = { id, name ->
@@ -130,23 +143,17 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
         )
         meshManager?.start()
 
+        val ipAddress = getSmartIpAddress()
+        
         try {
-            server = LocalServer(this, PORT, this)
-            server?.start(3600000)
+            server = LocalServer(this, PORT, ipAddress, roomKeyBase64, shortCode, this)
+            server?.start() // Use default timeout
         } catch (e: Exception) { Toast.makeText(this, "Err: ${e.message}", Toast.LENGTH_LONG).show() }
 
-        val ipAddress = getSmartIpAddress()
-        val url = "http://$ipAddress:$PORT"
-        ipText.text = url
-
-        ipText.setOnLongClickListener {
-            runOnUiThread {
-                startPulsingEffect()
-                showDiscoveryNotification("Demo Server")
-                AlertDialog.Builder(this).setTitle("Demo").setMessage("Test Pulsare").setPositiveButton("OK") { _, _ -> stopPulsingEffect() }.show()
-            }
-            true
-        }
+        val url = "http://$ipAddress:$PORT/#$roomKeyBase64"
+        
+        // Afisare IP + Short code special pentru laptopuri/browsere
+        ipText.text = getString(R.string.pc_connect_text, ipAddress, PORT, shortCode)
 
         try {
             val smallQr = generateQrCode(url, dpToPx(64))
@@ -163,7 +170,24 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
         magnetometer?.also { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL) }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 1f, this)
+            try {
+                var lastKnownLocation: Location? = null
+                if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+                    locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 1f, this)
+                    val loc = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    if (loc != null) lastKnownLocation = loc
+                }
+                if (locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true) {
+                    locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000L, 1f, this)
+                    val loc = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    if (loc != null && (lastKnownLocation == null || loc.time > lastKnownLocation.time)) {
+                        lastKnownLocation = loc
+                    }
+                }
+                lastKnownLocation?.let { onLocationChanged(it) }
+            } catch (e: Exception) {
+                Log.e("AirChat", "Location provider not available: ${e.message}")
+            }
         }
     }
 
@@ -195,7 +219,7 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
 
             // Trimite în WebView
             runOnUiThread {
-                findViewById<WebView>(R.id.webView).evaluateJavascript("updateMyHeading($azimuth)", null)
+                webView.evaluateJavascript("if (typeof updateMyHeading === 'function') updateMyHeading($azimuth)", null)
             }
         }
     }
@@ -207,16 +231,16 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
         val lat = location.latitude
         val lon = location.longitude
         runOnUiThread {
-            findViewById<WebView>(R.id.webView).evaluateJavascript("updateMyLocation($lat, $lon)", null)
+            webView.evaluateJavascript("if (typeof updateMyLocation === 'function') updateMyLocation($lat, $lon)", null)
         }
     }
 
     private fun startPulsingEffect() {
-        runOnUiThread { findViewById<WebView>(R.id.webView).evaluateJavascript("startPulsing();", null) }
+        runOnUiThread { webView.evaluateJavascript("if (typeof startPulsing === 'function') startPulsing();", null) }
     }
 
     private fun stopPulsingEffect() {
-        runOnUiThread { findViewById<WebView>(R.id.webView).evaluateJavascript("stopPulsing();", null) }
+        runOnUiThread { webView.evaluateJavascript("if (typeof stopPulsing === 'function') stopPulsing();", null) }
     }
 
     private fun triggerBuzzVibration() {
@@ -275,20 +299,44 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
             p.add(Manifest.permission.BLUETOOTH_ADVERTISE)
             p.add(Manifest.permission.BLUETOOTH_CONNECT)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) p.add(Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            p.add(Manifest.permission.POST_NOTIFICATIONS)
+            p.add(Manifest.permission.NEARBY_WIFI_DEVICES)
+        }
         ActivityCompat.requestPermissions(this, p.toTypedArray(), 101)
     }
 
     private fun getSmartIpAddress(): String {
         try {
+            var wifiClientIp: String? = null
             val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             val ip = wm.connectionInfo.ipAddress
-            if (ip != 0) return Formatter.formatIpAddress(ip)
+            if (ip != 0) {
+                val ipString = Formatter.formatIpAddress(ip)
+                if (ipString != "0.0.0.0") wifiClientIp = ipString
+            }
+            
+            var bestIp: String? = null
+            var wlanIp: String? = null
+            var apIp: String? = null
+            
             for (intf in Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                val name = intf.name.lowercase()
+                if (name.contains("rmnet") || name.contains("dummy") || name.contains("lo")) continue
+                
                 for (addr in Collections.list(intf.inetAddresses)) {
-                    if (!addr.isLoopbackAddress && addr is Inet4Address) return addr.hostAddress ?: "192.168.43.1"
+                    if (!addr.isLoopbackAddress && addr is Inet4Address) {
+                        val hostAddr = addr.hostAddress ?: continue
+                        if (name.contains("ap") || name.contains("swlan") || name.contains("hotspot") || name.contains("rndis")) {
+                            apIp = hostAddr
+                        } else if (name.contains("wlan")) {
+                            wlanIp = hostAddr
+                        }
+                        bestIp = hostAddr
+                    }
                 }
             }
+            return apIp ?: wifiClientIp ?: wlanIp ?: bestIp ?: "192.168.43.1"
         } catch (_: Exception) {}
         return "192.168.43.1"
     }
@@ -307,11 +355,16 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
             cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
             allowFileAccess = true
             allowContentAccess = true
+            setGeolocationEnabled(true)
         }
 
         webView.webViewClient = WebViewClient()
 
         webView.webChromeClient = object : WebChromeClient() {
+            override fun onGeolocationPermissionsShowPrompt(origin: String?, callback: android.webkit.GeolocationPermissions.Callback?) {
+                callback?.invoke(origin, true, false)
+            }
+
             override fun onPermissionRequest(request: PermissionRequest) {
                 val resources = request.resources
                 for (r in resources) {
@@ -332,7 +385,51 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
             }
         }
 
-        webView.loadUrl("http://127.0.0.1:$PORT")
+        webView.addJavascriptInterface(WebAppInterface(this), "AndroidInterface")
+        webView.loadUrl("http://127.0.0.1:$PORT/#$roomKeyBase64")
+    }
+
+    inner class WebAppInterface(private val context: Context) {
+        @android.webkit.JavascriptInterface
+        fun updateSystemUiTheme(theme: String) {
+            runOnUiThread {
+                val window = (context as MainActivity).window
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+                
+                if (theme == "light") {
+                    window.statusBarColor = android.graphics.Color.parseColor("#ffffff")
+                    window.navigationBarColor = android.graphics.Color.parseColor("#ffffff")
+                    insetsController.isAppearanceLightStatusBars = true
+                    insetsController.isAppearanceLightNavigationBars = true
+                    
+                    findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.mainLayout)?.setBackgroundColor(android.graphics.Color.parseColor("#ffffff"))
+                    findViewById<TextView>(R.id.ipText)?.apply {
+                        setBackgroundColor(android.graphics.Color.parseColor("#ffffff"))
+                        setTextColor(android.graphics.Color.parseColor("#000000"))
+                    }
+                    findViewById<ImageView>(R.id.qrImage)?.setBackgroundColor(android.graphics.Color.parseColor("#ffffff"))
+                } else {
+                    window.statusBarColor = android.graphics.Color.parseColor("#000000")
+                    window.navigationBarColor = android.graphics.Color.parseColor("#000000")
+                    insetsController.isAppearanceLightStatusBars = false
+                    insetsController.isAppearanceLightNavigationBars = false
+
+                    findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.mainLayout)?.setBackgroundColor(android.graphics.Color.parseColor("#000000"))
+                    findViewById<TextView>(R.id.ipText)?.apply {
+                        setBackgroundColor(android.graphics.Color.parseColor("#000000"))
+                        setTextColor(android.graphics.Color.parseColor("#ffffff"))
+                    }
+                    findViewById<ImageView>(R.id.qrImage)?.setBackgroundColor(android.graphics.Color.parseColor("#000000"))
+                }
+            }
+        }
+        
+        @android.webkit.JavascriptInterface
+        fun getBatteryLevel(): Int {
+            val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as android.os.BatteryManager
+            return batteryManager.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -341,6 +438,25 @@ class MainActivity : AppCompatActivity(), WebServerListener, SensorEventListener
             fileUploadCallback = null
         } else {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Dacă locația abia a fost acordată, o pornim imediat
+                try {
+                    if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+                        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 1f, this)
+                    }
+                    if (locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true) {
+                        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000L, 1f, this)
+                    }
+                } catch (e: Exception) {
+                    Log.e("AirChat", "Err location: ${e.message}")
+                }
+            }
         }
     }
 

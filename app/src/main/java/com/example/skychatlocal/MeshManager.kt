@@ -4,15 +4,39 @@ import android.content.Context
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 import org.json.JSONObject
+import java.security.SecureRandom
 import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 class MeshManager(
     private val context: Context,
     private val myName: String,
+    private val base64RoomKey: String,
     private val onMessageReceived: (String) -> Unit,
     private val onDeviceLost: () -> Unit,
     private val onPeerFound: (String, String) -> Unit
 ) {
+    private val secretKey = SecretKeySpec(android.util.Base64.decode(base64RoomKey, android.util.Base64.URL_SAFE), "AES")
+
+    private fun encrypt(data: ByteArray): ByteArray {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val iv = ByteArray(12)
+        SecureRandom().nextBytes(iv)
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(128, iv))
+        val ciphertext = cipher.doFinal(data)
+        return iv + ciphertext
+    }
+
+    private fun decrypt(data: ByteArray): ByteArray {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val iv = data.copyOfRange(0, 12)
+        val ciphertext = data.copyOfRange(12, data.size)
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, iv))
+        return cipher.doFinal(ciphertext)
+    }
+
     private val client = Nearby.getConnectionsClient(context)
     private val STRATEGY = Strategy.P2P_CLUSTER
     private val SERVICE_ID = "com.skidropz.airchat.MESH"
@@ -62,16 +86,19 @@ class MeshManager(
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(id: String, payload: Payload) {
             val bytes = payload.asBytes() ?: return
-            val str = String(bytes)
             try {
+                val decryptedBytes = decrypt(bytes)
+                val str = String(decryptedBytes)
                 val json = JSONObject(str)
                 val msgId = json.optString("id", "")
                 if (!seenMessageIds.contains(msgId)) {
                     seenMessageIds.add(msgId)
                     onMessageReceived(str)
-                    broadcast(payload, id)
+                    broadcast(payload, id) // Broadcast same encrypted payload to others
                 }
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+                // If decryption fails, ignore
+            }
         }
         override fun onPayloadTransferUpdate(id: String, update: PayloadTransferUpdate) {}
     }
@@ -81,7 +108,8 @@ class MeshManager(
             val json = JSONObject(jsonStr)
             if (!json.has("id")) json.put("id", UUID.randomUUID().toString())
             seenMessageIds.add(json.getString("id"))
-            broadcast(Payload.fromBytes(json.toString().toByteArray()))
+            val encryptedBytes = encrypt(json.toString().toByteArray())
+            broadcast(Payload.fromBytes(encryptedBytes))
         } catch (e: Exception) {}
     }
 
