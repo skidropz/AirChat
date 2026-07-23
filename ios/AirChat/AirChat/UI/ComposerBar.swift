@@ -101,7 +101,7 @@ struct ComposerBar: View {
         guard let item else { return }
         let send = onSendImage
         item.loadTransferable(type: Data.self) { result in
-            guard case .success(let data?) = result else { return }
+            guard case .success(let optionalData) = result, let data = optionalData else { return }
             if let dataURL = ComposerBar.encodeImage(data) {
                 DispatchQueue.main.async { send(dataURL) }
             }

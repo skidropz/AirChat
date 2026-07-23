@@ -23,7 +23,7 @@ enum WebSocketFrame {
 
     private static func makeFrame(opcode: UInt8, payload: [UInt8], masked: Bool) -> Data {
         var frame = Data()
-        var byte0: UInt8 = 0x80 | opcode  // FIN + opcode
+        let byte0: UInt8 = 0x80 | opcode  // FIN + opcode
         frame.append(byte0)
 
         var byte1: UInt8 = masked ? 0x80 : 0x00
