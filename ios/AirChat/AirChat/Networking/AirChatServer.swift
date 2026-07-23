@@ -13,14 +13,14 @@ enum NetworkUtils {
         var ptr: UnsafeMutablePointer<ifaddrs>? = firstAddr
         while let iface = ptr {
             let info = iface.pointee
-            let addrPtr = info.ifa_addr
-            if (info.ifa_flags & UInt32(IFF_UP)) != 0 && (info.ifa_flags & UInt32(IFF_LOOPBACK)) == 0 {
+            if let addrPtr = info.ifa_addr,
+               (info.ifa_flags & UInt32(IFF_UP)) != 0 && (info.ifa_flags & UInt32(IFF_LOOPBACK)) == 0 {
                 let family = addrPtr.pointee.sa_family
                 if family == sa_family_t(AF_INET) {
                     let name = String(cString: info.ifa_name)
                     if name.hasPrefix("en") || name.hasPrefix("pdp") {
                         var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-                        getnameinfo(addrPtr, socklen_t(info.ifa_addr.pointee.sa_len),
+                        getnameinfo(addrPtr, socklen_t(addrPtr.pointee.sa_len),
                                     &hostname, socklen_t(hostname.count),
                                     nil, 0, NI_NUMERICHOST)
                         let candidate = String(cString: hostname)
@@ -256,7 +256,7 @@ final class AirChatServer {
         let response = """
         HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: \(accept)\r\n\r\n
         """
-        conn.send(content: Data(response.utf8)) { [weak self] _ in
+        conn.send(content: Data(response.utf8), completion: .contentProcessed { [weak self] _ in
             guard let self else { return }
             let client = ClientConnection(connection: conn, server: self)
             self.lock.lock()
@@ -268,7 +268,7 @@ final class AirChatServer {
             for old in history { client.sendText(old) }
 
             client.startReading()
-        }
+        })
     }
 
     // MARK: - Called by ClientConnection when a frame arrives

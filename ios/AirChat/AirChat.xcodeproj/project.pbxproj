@@ -1,8 +1,7 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {
-	};
+	classes = { };
 	objectVersion = 56;
 	objects = {
 
@@ -66,14 +65,14 @@
 		000000000000000000A00049 /* ComposerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerBar.swift; sourceTree = "<group>"; };
 		000000000000000000A0004B /* UsersSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersSheet.swift; sourceTree = "<group>"; };
 		000000000000000000A0004D /* CompassSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassSheet.swift; sourceTree = "<group>"; };
-		000000000000000000A00014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
-		000000000000000000A0004F /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Resources/Web/index.html; sourceTree = "<group>"; };
-		000000000000000000A00051 /* app.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Resources/Web/app.js; sourceTree = "<group>"; };
-		000000000000000000A00053 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Resources/Web/style.css; sourceTree = "<group>"; };
-		000000000000000000A00055 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Resources/Web/manifest.json; sourceTree = "<group>"; };
-		000000000000000000A00057 /* sw.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Resources/Web/sw.js; sourceTree = "<group>"; };
-		000000000000000000A00012 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		000000000000000000A00013 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = Resources/ro.lproj/Localizable.strings; sourceTree = "<group>"; };
+		000000000000000000A00014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
+		000000000000000000A0004F /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Web/index.html; sourceTree = "<group>"; };
+		000000000000000000A00051 /* app.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Web/app.js; sourceTree = "<group>"; };
+		000000000000000000A00053 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Web/style.css; sourceTree = "<group>"; };
+		000000000000000000A00055 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Web/manifest.json; sourceTree = "<group>"; };
+		000000000000000000A00057 /* sw.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Web/sw.js; sourceTree = "<group>"; };
+		000000000000000000A00012 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		000000000000000000A00013 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
