@@ -53,7 +53,11 @@ struct RootView: View {
                 }
             case .chat:
                 if let store {
-                    ChatView(store: store)
+                    ChatView(store: store) {
+                        store.shutdown()
+                        self.store = nil
+                        route = .start
+                    }
                 }
             }
         }

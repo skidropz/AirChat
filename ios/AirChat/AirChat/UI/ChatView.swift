@@ -3,6 +3,7 @@ import SwiftUI
 /// The main conversation screen.
 struct ChatView: View {
     @ObservedObject var store: ChatStore
+    let onDisconnect: () -> Void
 
     @State private var showUsers = false
     @State private var showCompass = false
@@ -10,6 +11,7 @@ struct ChatView: View {
     @State private var fullImage: String?
     @State private var reply: AirChatMessage.ReplyRef?
     @State private var shakeOffset: CGFloat = 0
+    @State private var glow = false
 
     private var filteredMessages: [DisplayMessage] {
         store.messages.filter { $0.chatGroup == store.activeChat }
@@ -32,7 +34,14 @@ struct ChatView: View {
                 onBuzz: { store.sendBuzz(to: store.activeChat) }
             )
         }
-        .background(Color(hex: "#0A0A0A").ignoresSafeArea())
+        .background {
+            ZStack {
+                Color(hex: "#0A0A0A").ignoresSafeArea()
+                RadialGradient(colors: [Color.accentColor.opacity(glow ? 0.16 : 0.06), .clear], center: .topTrailing, startRadius: 20, endRadius: 520)
+                    .ignoresSafeArea()
+            }
+        }
+        .animation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true), value: glow)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(store.activeChat == "general" ? "AirChat" : store.activeChat)
         .toolbar {
@@ -41,6 +50,17 @@ struct ChatView: View {
                     Button { store.activeChat = "general" } label: {
                         Image(systemName: "chevron.left")
                     }
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(role: .destructive) {
+                        onDisconnect()
+                    } label: {
+                        Label(NSLocalizedString("disconnect", comment: "Disconnect"), systemImage: "rectangle.portrait.and.arrow.right")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle.fill")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -85,6 +105,7 @@ struct ChatView: View {
         .onChange(of: store.shakeTrigger) { _, _ in triggerShake() }
         .onAppear {
             store.locationManager.requestPermissionAndStart()
+            glow = true
         }
     }
 

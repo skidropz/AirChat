@@ -34,6 +34,8 @@ struct ComposerBar: View {
 
                 TextField(NSLocalizedString("type_msg", comment: ""), text: $text, axis: .vertical)
                     .lineLimit(1...4)
+                    .submitLabel(.send)
+                    .onSubmit { send() }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(.white.opacity(0.1))
