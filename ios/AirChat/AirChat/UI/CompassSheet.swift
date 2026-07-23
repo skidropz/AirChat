@@ -56,7 +56,7 @@ struct CompassSheet: View {
 
     private var targetInfo: (lat: Double, lon: Double)? {
         guard let lat = target.lat, let lon = target.lon,
-              let myLoc = location.coordinate, lat != 0 || lon != 0 else {
+              location.coordinate != nil, lat != 0 || lon != 0 else {
             return nil
         }
         return (lat, lon)
