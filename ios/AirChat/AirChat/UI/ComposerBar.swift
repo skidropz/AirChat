@@ -86,7 +86,7 @@ struct ComposerBar: View {
         } label: {
             Image(systemName: recorder.isRecording ? "stop.circle.fill" : "mic.circle.fill")
                 .font(.system(size: 30))
-                .foregroundStyle(recorder.isRecording ? .red : .tint)
+                .foregroundStyle(recorder.isRecording ? .red : .accentColor)
         }
     }
 
@@ -101,7 +101,7 @@ struct ComposerBar: View {
         guard let item else { return }
         let send = onSendImage
         item.loadTransferable(type: Data.self) { result in
-            guard case .success(let data?) = result, let data else { return }
+            guard case .success(let data) = result else { return }
             if let dataURL = ComposerBar.encodeImage(data) {
                 DispatchQueue.main.async { send(dataURL) }
             }
