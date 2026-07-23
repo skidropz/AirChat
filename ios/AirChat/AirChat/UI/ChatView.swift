@@ -146,7 +146,9 @@ struct ChatView: View {
                 .padding(.vertical, 8)
             }
             .onChange(of: filteredMessages.count) { _, _ in
-                withAnimation { proxy.scrollTo(filteredMessages.last?.id, anchor: .bottom) }
+                withAnimation(.spring(response: 0.42, dampingFraction: 0.86)) {
+                    proxy.scrollTo(filteredMessages.last?.id, anchor: .bottom)
+                }
             }
             .onAppear {
                 proxy.scrollTo(filteredMessages.last?.id, anchor: .bottom)

@@ -11,6 +11,7 @@ struct MessageRow: View {
     let onTapSender: (String) -> Void
 
     @StateObject private var player = AudioPlayerHolder()
+    @State private var appeared = false
 
     var body: some View {
         if message.type == .system {
@@ -41,6 +42,16 @@ struct MessageRow: View {
             .padding(.horizontal)
             .padding(.vertical, 2)
             .contentShape(Rectangle())
+            .opacity(appeared ? 1 : 0)
+            .scaleEffect(appeared ? 1 : 0.82, anchor: isMine ? .bottomTrailing : .bottomLeading)
+            .offset(x: appeared ? 0 : (isMine ? 34 : -34), y: appeared ? 0 : 10)
+            .animation(.spring(response: 0.38, dampingFraction: 0.78), value: appeared)
+            .onAppear {
+                guard !appeared else { return }
+                withAnimation(.spring(response: 0.38, dampingFraction: 0.78)) {
+                    appeared = true
+                }
+            }
             .contextMenu {
                 Button {
                     let ref = AirChatMessage.ReplyRef(
