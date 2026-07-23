@@ -1,0 +1,446 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {}
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		000000000000000000A00020 /* AirChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0001F /* AirChatApp.swift */; };
+		000000000000000000A00022 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00021 /* AppConstants.swift */; };
+		000000000000000000A00024 /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00023 /* ChatStore.swift */; };
+		000000000000000000A00026 /* AirChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00025 /* AirChatMessage.swift */; };
+		000000000000000000A00028 /* XORCipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00027 /* XORCipher.swift */; };
+		000000000000000000A0002A /* MeshCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00029 /* MeshCrypto.swift */; };
+		000000000000000000A0002C /* AirChatServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0002B /* AirChatServer.swift */; };
+		000000000000000000A0002E /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0002D /* HTTPRequest.swift */; };
+		000000000000000000A00030 /* WebSocketFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0002F /* WebSocketFrame.swift */; };
+		000000000000000000A00032 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00031 /* ClientConnection.swift */; };
+		000000000000000000A00034 /* WebSocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00033 /* WebSocketClient.swift */; };
+		000000000000000000A00036 /* MeshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00035 /* MeshManager.swift */; };
+		000000000000000000A00038 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00037 /* LocationManager.swift */; };
+		000000000000000000A0003A /* DeviceSensors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00039 /* DeviceSensors.swift */; };
+		000000000000000000A0003C /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0003B /* Theme.swift */; };
+		000000000000000000A0003E /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0003D /* Components.swift */; };
+		000000000000000000A00040 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0003F /* StartView.swift */; };
+		000000000000000000A00042 /* JoinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00041 /* JoinView.swift */; };
+		000000000000000000A00044 /* HostSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00043 /* HostSetupView.swift */; };
+		000000000000000000A00046 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00045 /* ChatView.swift */; };
+		000000000000000000A00048 /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00047 /* MessageRow.swift */; };
+		000000000000000000A0004A /* ComposerBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00049 /* ComposerBar.swift */; };
+		000000000000000000A0004C /* UsersSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0004B /* UsersSheet.swift */; };
+		000000000000000000A0004E /* CompassSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0004D /* CompassSheet.swift */; };
+		000000000000000000A00015 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00014 /* Assets.xcassets */; };
+		000000000000000000A00050 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A0004F /* index.html */; };
+		000000000000000000A00052 /* app.js in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00051 /* app.js */; };
+		000000000000000000A00054 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00053 /* style.css */; };
+		000000000000000000A00056 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00055 /* manifest.json */; };
+		000000000000000000A00058 /* sw.js in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00057 /* sw.js */; };
+		000000000000000000A00016 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A00011 /* Localizable.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		000000000000000000A00006 /* AirChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000A0001F /* AirChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirChatApp.swift; sourceTree = "<group>"; };
+		000000000000000000A00021 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
+		000000000000000000A00023 /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
+		000000000000000000A00025 /* AirChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirChatMessage.swift; sourceTree = "<group>"; };
+		000000000000000000A00027 /* XORCipher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XORCipher.swift; sourceTree = "<group>"; };
+		000000000000000000A00029 /* MeshCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshCrypto.swift; sourceTree = "<group>"; };
+		000000000000000000A0002B /* AirChatServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirChatServer.swift; sourceTree = "<group>"; };
+		000000000000000000A0002D /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
+		000000000000000000A0002F /* WebSocketFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketFrame.swift; sourceTree = "<group>"; };
+		000000000000000000A00031 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
+		000000000000000000A00033 /* WebSocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketClient.swift; sourceTree = "<group>"; };
+		000000000000000000A00035 /* MeshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshManager.swift; sourceTree = "<group>"; };
+		000000000000000000A00037 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		000000000000000000A00039 /* DeviceSensors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSensors.swift; sourceTree = "<group>"; };
+		000000000000000000A0003B /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		000000000000000000A0003D /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		000000000000000000A0003F /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		000000000000000000A00041 /* JoinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinView.swift; sourceTree = "<group>"; };
+		000000000000000000A00043 /* HostSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostSetupView.swift; sourceTree = "<group>"; };
+		000000000000000000A00045 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		000000000000000000A00047 /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
+		000000000000000000A00049 /* ComposerBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerBar.swift; sourceTree = "<group>"; };
+		000000000000000000A0004B /* UsersSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersSheet.swift; sourceTree = "<group>"; };
+		000000000000000000A0004D /* CompassSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassSheet.swift; sourceTree = "<group>"; };
+		000000000000000000A00014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Assets.xcassets; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
+		000000000000000000A0004F /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Resources/Web/index.html; sourceTree = "<group>"; };
+		000000000000000000A00051 /* app.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Resources/Web/app.js; sourceTree = "<group>"; };
+		000000000000000000A00053 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Resources/Web/style.css; sourceTree = "<group>"; };
+		000000000000000000A00055 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Resources/Web/manifest.json; sourceTree = "<group>"; };
+		000000000000000000A00057 /* sw.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Resources/Web/sw.js; sourceTree = "<group>"; };
+		000000000000000000A00012 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		000000000000000000A00013 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = Resources/ro.lproj/Localizable.strings; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000000000000000000A00009 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		000000000000000000A00011 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				000000000000000000A00012 /* en */,
+				000000000000000000A00013 /* ro */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin PBXGroup section */
+		000000000000000000A00005 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00014 /* Assets.xcassets */,
+				000000000000000000A0004F /* index.html */,
+				000000000000000000A00051 /* app.js */,
+				000000000000000000A00053 /* style.css */,
+				000000000000000000A00055 /* manifest.json */,
+				000000000000000000A00057 /* sw.js */,
+				000000000000000000A00011 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00017 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A0001F /* AirChatApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00018 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00021 /* AppConstants.swift */,
+				000000000000000000A00023 /* ChatStore.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00019 /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00027 /* XORCipher.swift */,
+				000000000000000000A00029 /* MeshCrypto.swift */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		000000000000000000A0001A /* Mesh */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00035 /* MeshManager.swift */,
+			);
+			path = Mesh;
+			sourceTree = "<group>";
+		};
+		000000000000000000A0001B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00025 /* AirChatMessage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		000000000000000000A0001C /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A0002B /* AirChatServer.swift */,
+				000000000000000000A0002D /* HTTPRequest.swift */,
+				000000000000000000A0002F /* WebSocketFrame.swift */,
+				000000000000000000A00031 /* ClientConnection.swift */,
+				000000000000000000A00033 /* WebSocketClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		000000000000000000A0001D /* Sensors */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00037 /* LocationManager.swift */,
+				000000000000000000A00039 /* DeviceSensors.swift */,
+			);
+			path = Sensors;
+			sourceTree = "<group>";
+		};
+		000000000000000000A0001E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A0003B /* Theme.swift */,
+				000000000000000000A0003D /* Components.swift */,
+				000000000000000000A0003F /* StartView.swift */,
+				000000000000000000A00041 /* JoinView.swift */,
+				000000000000000000A00043 /* HostSetupView.swift */,
+				000000000000000000A00045 /* ChatView.swift */,
+				000000000000000000A00047 /* MessageRow.swift */,
+				000000000000000000A00049 /* ComposerBar.swift */,
+				000000000000000000A0004B /* UsersSheet.swift */,
+				000000000000000000A0004D /* CompassSheet.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00004 /* AirChat */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00017 /* App */,
+				000000000000000000A00018 /* Core */,
+				000000000000000000A00019 /* Crypto */,
+				000000000000000000A0001A /* Mesh */,
+				000000000000000000A0001B /* Models */,
+				000000000000000000A0001C /* Networking */,
+				000000000000000000A0001D /* Sensors */,
+				000000000000000000A0001E /* UI */,
+				000000000000000000A00005 /* Resources */,
+			);
+			path = AirChat;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00006 /* AirChat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		000000000000000000A00002 = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A00004 /* AirChat */,
+				000000000000000000A00003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000000A00007 /* AirChat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000000A0000C /* Build configuration list for PBXNativeTarget "AirChat" */;
+			buildPhases = (
+				000000000000000000A00008 /* Sources */,
+				000000000000000000A00009 /* Frameworks */,
+				000000000000000000A0000A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AirChat;
+			productName = AirChat;
+			productReference = 000000000000000000A00006 /* AirChat.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000A00001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					000000000000000000A00007 = {
+						CreatedOnToolsVersion = 1500;
+					};
+				};
+			};
+			buildConfigurationList = 000000000000000000A0000B /* Build configuration list for PBXProject "AirChat" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ro,
+			);
+			mainGroup = 000000000000000000A00002;
+			productRefGroup = 000000000000000000A00003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				000000000000000000A00007 /* AirChat */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		000000000000000000A0000A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000000000000000000A00015 /* Assets.xcassets in Resources */,
+				000000000000000000A00050 /* index.html in Resources */,
+				000000000000000000A00052 /* app.js in Resources */,
+				000000000000000000A00054 /* style.css in Resources */,
+				000000000000000000A00056 /* manifest.json in Resources */,
+				000000000000000000A00058 /* sw.js in Resources */,
+				000000000000000000A00016 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000000000000000000A00008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000000000000000000A00020 /* AirChatApp.swift in Sources */,
+				000000000000000000A00022 /* AppConstants.swift in Sources */,
+				000000000000000000A00024 /* ChatStore.swift in Sources */,
+				000000000000000000A00026 /* AirChatMessage.swift in Sources */,
+				000000000000000000A00028 /* XORCipher.swift in Sources */,
+				000000000000000000A0002A /* MeshCrypto.swift in Sources */,
+				000000000000000000A0002C /* AirChatServer.swift in Sources */,
+				000000000000000000A0002E /* HTTPRequest.swift in Sources */,
+				000000000000000000A00030 /* WebSocketFrame.swift in Sources */,
+				000000000000000000A00032 /* ClientConnection.swift in Sources */,
+				000000000000000000A00034 /* WebSocketClient.swift in Sources */,
+				000000000000000000A00036 /* MeshManager.swift in Sources */,
+				000000000000000000A00038 /* LocationManager.swift in Sources */,
+				000000000000000000A0003A /* DeviceSensors.swift in Sources */,
+				000000000000000000A0003C /* Theme.swift in Sources */,
+				000000000000000000A0003E /* Components.swift in Sources */,
+				000000000000000000A00040 /* StartView.swift in Sources */,
+				000000000000000000A00042 /* JoinView.swift in Sources */,
+				000000000000000000A00044 /* HostSetupView.swift in Sources */,
+				000000000000000000A00046 /* ChatView.swift in Sources */,
+				000000000000000000A00048 /* MessageRow.swift in Sources */,
+				000000000000000000A0004A /* ComposerBar.swift in Sources */,
+				000000000000000000A0004C /* UsersSheet.swift in Sources */,
+				000000000000000000A0004E /* CompassSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		000000000000000000A0000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		000000000000000000A0000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		000000000000000000A0000F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AirChat/Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = ;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skidropz.airchat;
+				PRODUCT_NAME = $(TARGET_NAME);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "-";
+				ENABLE_PREVIEWS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = -Onone;
+			};
+			name = Debug;
+		};
+		000000000000000000A00010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = AirChat/Resources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = ;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skidropz.airchat;
+				PRODUCT_NAME = $(TARGET_NAME);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_IDENTITY = "";
+				ENABLE_PREVIEWS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = -O;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000000000000000000A0000B /* Build configuration list for PBXProject "AirChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000A0000D /* Debug */,
+				000000000000000000A0000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		000000000000000000A0000C /* Build configuration list for PBXNativeTarget "AirChat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000A0000F /* Debug */,
+				000000000000000000A00010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 000000000000000000A00001 /* Project object */;
+}

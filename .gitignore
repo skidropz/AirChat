@@ -13,3 +13,13 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# --- iOS / Xcode (AirChat native port) ---
+ios/AirChat/AirChat.xcodeproj/xcuserdata/
+ios/AirChat/AirChat.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+*.moved-aside
+

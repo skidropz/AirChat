@@ -1,0 +1,57 @@
+/* AirChat — Română */
+"name_placeholder" = "Numele tău";
+"choose_color" = "Alege culoarea pentru mesajele tale";
+"host_btn" = "Găzduiește o cameră";
+"host_subtitle" = "Ceilalți intră prin telefonul tău, pe același Wi-Fi";
+"join_btn" = "Intră într-o cameră";
+"join_subtitle" = "Conectează-te la un host AirChat existent";
+"connect_btn" = "Conectare";
+
+"paste_url" = "Lipește link-ul de conectare";
+"or_manual" = "Sau introdu datele manual";
+"host_field" = "Host";
+"port_field" = "Port";
+"key_field" = "Cheie cameră";
+"join_title" = "Intră într-o cameră";
+"cancel" = "Anulare";
+"join_error" = "Introdu o adresă host, un port și o cheie de cameră.";
+
+"host_ready" = "Camera este activă";
+"laptop_code" = "Cod scurt pentru laptopuri";
+"type_in_browser" = "Deschide %@ într-un browser";
+"scan_qr_hint" = "Sau scanează acest cod QR dintr-un telefon";
+"address_label" = "Adresă";
+"mesh_label" = "Mesh (peer-i iOS)";
+"mesh_searching" = "Caut…";
+"mesh_connected" = "conectați";
+"copy_link" = "Copiază link-ul de conectare";
+"enter_chat" = "Intră în chat";
+"ios_host_caveat" = "Notă: iOS nu poate crea un hotspot Wi-Fi sau captive portal. Oaspeții trebuie să fie pe același Wi-Fi și să deschidă link-ul în browser.";
+"qr_title" = "Link de conectare";
+
+"type_msg" = "Scrie un mesaj…";
+"swipe_cancel" = "Glisează pentru anulare";
+
+"seen_by" = "Văzut de ";
+"reply" = "Răspunde";
+"reply_to" = "Răspuns pentru";
+"reply_img" = "[Imagine]";
+"reply_audio" = "[Mesaj vocal 🎤]";
+
+"online" = "Online";
+"connecting" = "Se conectează…";
+
+"active_users" = "Utilizatori activi";
+"done" = "Gata";
+"status_online" = "Conectat";
+"me_suffix" = "(Eu)";
+
+"looking_for" = "Îl căutăm pe";
+"searching_signal" = "Caut semnal…";
+"distance" = "DISTANȚĂ";
+"calculating" = "Calculare…";
+"m_suffix" = " m";
+"km_suffix" = " km";
+
+"buzz_msg" = "⚡ %@ a dat un BUZZ!";
+"joined_suffix" = " s-a conectat.";

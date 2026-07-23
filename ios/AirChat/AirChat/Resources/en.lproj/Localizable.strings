@@ -1,0 +1,57 @@
+/* AirChat — English */
+"name_placeholder" = "Your name";
+"choose_color" = "Choose your message color";
+"host_btn" = "Host a room";
+"host_subtitle" = "Others join through your phone on the same Wi-Fi";
+"join_btn" = "Join a room";
+"join_subtitle" = "Connect to an existing AirChat host";
+"connect_btn" = "Connect";
+
+"paste_url" = "Paste the join link";
+"or_manual" = "Or enter details manually";
+"host_field" = "Host";
+"port_field" = "Port";
+"key_field" = "Room key";
+"join_title" = "Join a room";
+"cancel" = "Cancel";
+"join_error" = "Enter a host address, port and room key.";
+
+"host_ready" = "Room is live";
+"laptop_code" = "Short code for laptops";
+"type_in_browser" = "Open %@ in a browser";
+"scan_qr_hint" = "Or scan this QR code from a phone";
+"address_label" = "Address";
+"mesh_label" = "Mesh (iOS peers)";
+"mesh_searching" = "Searching…";
+"mesh_connected" = "connected";
+"copy_link" = "Copy join link";
+"enter_chat" = "Enter chat";
+"ios_host_caveat" = "Note: iOS cannot create a Wi-Fi hotspot or captive portal. Guests must be on the same Wi-Fi network and open the link in their browser.";
+"qr_title" = "Join link";
+
+"type_msg" = "Type a message…";
+"swipe_cancel" = "Swipe to cancel";
+
+"seen_by" = "Seen by ";
+"reply" = "Reply";
+"reply_to" = "Replying to";
+"reply_img" = "[Image]";
+"reply_audio" = "[Voice message 🎤]";
+
+"online" = "Online";
+"connecting" = "Connecting…";
+
+"active_users" = "Active users";
+"done" = "Done";
+"status_online" = "Online";
+"me_suffix" = "(Me)";
+
+"looking_for" = "Looking for";
+"searching_signal" = "Searching signal…";
+"distance" = "DISTANCE";
+"calculating" = "Calculating…";
+"m_suffix" = "m";
+"km_suffix" = "km";
+
+"buzz_msg" = "⚡ %@ sent a BUZZ!";
+"joined_suffix" = " joined.";
