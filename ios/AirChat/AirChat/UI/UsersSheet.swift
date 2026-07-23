@@ -58,7 +58,7 @@ struct UsersSheet: View {
                     if let b = user.battery {
                         Label("\(b)%", systemImage: batteryIcon(b))
                             .font(.caption2)
-                            .foregroundStyle(b > 20 ? .secondary : .red)
+                            .foregroundStyle(b > 20 ? Color.secondary : Color.red)
                     }
                 }
             }
