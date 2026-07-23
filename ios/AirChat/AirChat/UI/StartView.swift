@@ -98,7 +98,7 @@ struct StartView: View {
                 }
                 Spacer()
                 Image(systemName: selectedMode == mode ? "largecircle.fill.circle" : "circle")
-                    .foregroundStyle(selectedMode == mode ? .tint : .secondary)
+                    .foregroundStyle(selectedMode == mode ? Color.accentColor : Color.secondary)
             }
             .padding()
             .background(.white.opacity(0.06))
