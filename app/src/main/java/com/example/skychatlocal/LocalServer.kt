@@ -18,6 +18,8 @@ class LocalServer(
     // Lista clienților WebSocket conectați
     private val webSocketSockets = mutableListOf<WebSocket>()
 
+    private val startedAt = System.currentTimeMillis()
+
     // --- ISTORIC MESAJE ---
     // Păstrăm ultimele 50 de mesaje sub formă de JSON String
     private val messageHistory = LinkedList<String>()
@@ -53,8 +55,35 @@ class LocalServer(
             return res
         }
         
+        // Ghid de instalare (iOS are nevoie de el, Android la fel: prietenii fără
+        // internet trebuie să știe cum să-ia app-ul de pe acest server)
+        if (uri == "/ios-install" || uri == "/guide") {
+            return newFixedLengthResponse(Response.Status.REDIRECT, NanoHTTPD.MIME_PLAINTEXT, "")
+                .apply { addHeader("Location", "/install.html") }
+        }
+
+        // Status JSON — folosit de install.html și de panoul gazdei din iOS
+        if (uri == "/api/status") {
+            val json = "{\"app\":\"AirChat\",\"platform\":\"Android\",\"port\":$listeningPort," +
+                "\"hostIP\":\"$localIp\",\"shortCode\":\"$shortCode\"," +
+                "\"clients\":${webSocketSockets.size}," +
+                "\"uptime\":${(System.currentTimeMillis() - startedAt) / 1000}}"
+            return newFixedLengthResponse(Response.Status.OK, "application/json", json)
+        }
+
         // INTERCEPTARE PENTRU DESCARCAREA APK-ULUI VIRAL
         if (uri == "/download-app") {
+            // Un iPhone nu poate instala un .apk. În loc de un fișier inutil,
+            // trimite device-urile Apple pe ghid, care explică ruta iOS (Xcode /
+            // Sideloadly / SideStore cu Apple ID gratuit — fără cont de developer).
+            val agent = (session.headers["user-agent"] ?: "").lowercase()
+            val isApple = agent.contains("iphone") || agent.contains("ipad") ||
+                agent.contains("ipod") || (agent.contains("macintosh") && agent.contains("safari"))
+            if (isApple) {
+                val res = newFixedLengthResponse(Response.Status.REDIRECT, NanoHTTPD.MIME_PLAINTEXT, "")
+                res.addHeader("Location", "/install.html")
+                return res
+            }
             try {
                 val apkPath = context.applicationInfo.sourceDir
                 val apkFile = java.io.File(apkPath)
