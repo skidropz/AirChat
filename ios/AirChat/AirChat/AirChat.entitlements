@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Deliberately EMPTY.
+
+  This is part of the "no paid developer account" plan: every entitlement listed
+  here must be provisable by a *free* personal Apple ID when Xcode does
+  free-provisioning, otherwise the build fails with
+  "provisioning profile doesn't include the ... entitlement".
+
+  Therefore AirChat for iOS uses only entitlement-free frameworks:
+    * Network.framework (NWListener)   -> the HTTP + WebSocket server
+    * MultipeerConnectivity             -> the mesh (no entitlement required)
+    * CoreLocation / CoreMotion         -> compass
+    * AVFoundation                      -> voice notes + background keep-alive
+    * UIKit / WKWebView                 -> the chat UI itself
+
+  Explicitly NOT used (they all need a paid membership or an Apple approval):
+    - Access Wi-Fi Information  (SSID lookup)  -> we read IPs with getifaddrs() instead
+    - Hotspot Configuration     (join a Wi-Fi) -> not needed, the host IS the network
+    - Personal Hotspot control  (does not exist on iOS at all, paid or not)
+    - App Groups / Push / Sign in with Apple
+-->
+<dict/>
+</plist>

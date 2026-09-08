@@ -1,0 +1,120 @@
+name: iOS build (unsigned .ipa for sideloading)
+
+# Why this exists: installing AirChat on an iPhone normally means a paid Apple
+# Developer account for TestFlight, or Xcode + your own free Apple ID on a Mac.
+# This workflow does the compile step for you and hands back
+# `AirChat-unsigned.ipa`, which Sideloadly / AltStore / SideStore sign with the
+# *recipient's* free Apple ID. No certificate, no provisioning profile, no $99.
+#
+# Why it sits in ios/ci/ instead of .github/workflows/: GitHub rejects any push that
+# creates or edits a file under .github/workflows/ unless the pushing credential has
+# the `workflows` permission (GitHub App tokens and most scoped/CI tokens do not).
+# So the workflow ships as ordinary repo content and you activate it with one move:
+#
+#   mkdir -p .github/workflows
+#   git mv ios/ci/ios-ipa.yml .github/workflows/ios-ipa.yml
+#   git push
+#
+# Do it from a account/credential that may write that folder (the GitHub web UI works
+# too: Add file ▸ Commit new file, paste this file in as .github/workflows/ios-ipa.yml).
+
+on:
+  workflow_dispatch:
+    inputs:
+      android_apk_artifact:
+        description: "Also bundle the Android APK (run id of the build-android run, empty to skip)"
+        required: false
+        default: ""
+  push:
+    paths:
+      - "ios/**"
+      - "app/src/main/assets/**"
+      - ".github/workflows/ios-ipa.yml"
+    tags: ["v*"]
+  pull_request:
+    paths:
+      - "ios/**"
+      - "app/src/main/assets/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ipa:
+    name: Build AirChat.app → AirChat-unsigned.ipa
+    runs-on: macos-14
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app || true
+
+      - name: Xcode version
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # The iOS target reads the chat UI from app/src/main/assets via
+      # scripts/sync_web_assets.sh, so Android and iPhone always ship the same page.
+      - name: Sync shared web assets
+        run: bash ios/AirChat/scripts/sync_web_assets.sh
+
+      - name: Build unsigned + package .ipa
+        run: bash ios/AirChat/scripts/build_ipa.sh
+
+      - name: Show what changed in the shared bundle
+        run: git diff --stat -- ios/AirChat/AirChat/WebApp || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AirChat-unsigned-ipa
+          path: ios/AirChat/build/AirChat-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 90
+
+      # Handy for people who just want to eyeball that WebApp/ and Info.plist made it in.
+      - name: Package bundle listing
+        run: |
+          app=$(find ios/AirChat/build/DerivedData/Build/Products -maxdepth 2 -name AirChat.app | head -1)
+          [ -n "$app" ] && { echo "Bundle contents of $app:"; find "$app" -maxdepth 2 | sort | head -60; } > bundle.txt || true
+          cat bundle.txt || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            bundle.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+  android:
+    name: Build AirChat.apk (bundled into the iPhone's share folder)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Assemble release APK (debug-signed, enough for LAN sharing)
+        run: ./gradlew --no-daemon assembleRelease assembleDebug || ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AirChat-apk
+          path: |
+            app/build/outputs/apk/**/*.apk
+          if-no-files-found: ignore
+          retention-days: 90
+
+  notes:
+    name: Where to get it
+    needs: [ipa]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::notice title=Install on iPhone::Download AirChat-unsigned-ipa from this run, then sign+install it with Sideloadly (free Apple ID) or SideStore/AltStore. Details: ios/README.md"

@@ -23,3 +23,15 @@ DerivedData/
 build/
 *.moved-aside
 
+
+# --- iOS build output & staged install artifacts (AirChat for iOS) ---
+ios/AirChat/build/
+ios/AirChat/DerivedData/
+ios/AirChat/AirChat/WebApp/share/*
+!ios/AirChat/AirChat/WebApp/share/README.md
+*.ipa
+*.xcarchive
+*.app.dSYM.zip
+# Xcode writes these locally; never commit them
+ios/AirChat/AirChat.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+ios/AirChat/AirChat.xcodeproj/xcuserdata/

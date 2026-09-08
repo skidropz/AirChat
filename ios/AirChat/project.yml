@@ -1,0 +1,65 @@
+# XcodeGen spec for AirChat-iOS.
+#
+# The committed `AirChat.xcodeproj` is authoritative; this file exists so the project
+# can be regenerated from a readable description instead of editing pbxproj by hand:
+#
+#     brew install xcodegen
+#     cd ios/AirChat && xcodegen generate
+#
+# or, with no toolchain at all:
+#
+#     python3 scripts/generate_project.py
+#
+# Both produce the same single-app target with zero third-party dependencies.
+name: AirChat
+options:
+  bundleIdPrefix: com.skidropz
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "15.0"
+    # Free personal Apple ID: no team, automatic signing, no capabilities.
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+    ENABLE_USER_SCRIPT_SANDBOXING: "NO"
+targets:
+  AirChat:
+    type: application
+    platform: iOS
+    sources:
+      - path: AirChat/Sources
+      # Folder reference: WebApp keeps its structure inside the .app bundle, which is
+      # what the embedded HTTP server reads.
+      - path: AirChat/WebApp
+        buildPhase: resources
+        type: folder
+      - path: AirChat/Resources/Assets.xcassets
+        buildPhase: resources
+    info:
+      path: AirChat/Info.plist
+    entitlements:
+      path: AirChat/AirChat.entitlements
+    preBuildScripts:
+      - name: Sync shared web app
+        script: '"${SRCROOT}/scripts/sync_web_assets.sh"'
+        inputFiles:
+          - ../../app/src/main/assets/index.html
+        outputFiles:
+          - AirChat/WebApp/index.html
+        alwaysOutOfDate: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.skidropz.airchat
+        INFOPLIST_FILE: AirChat/Info.plist
+        CODE_SIGN_ENTITLEMENTS: AirChat/AirChat.entitlements
+        GENERATE_INFOPLIST_FILE: "NO"
+        MARKETING_VERSION: "3.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        PRODUCT_NAME: AirChat

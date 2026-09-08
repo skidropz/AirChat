@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>AirChat</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+
+	<!-- airchat://join?host=172.20.10.1&amp;port=8080&amp;key=...  (used by the QR code) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.skidropz.airchat</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>airchat</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- ============ PRIVACY / PERMISSION STRINGS ============ -->
+	<!-- Without NSLocalNetworkUsageDescription iOS silently drops every inbound
+	     connection that does not come from 127.0.0.1, i.e. the phone can never
+	     become a server. This is the single most important iOS-specific key. -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>AirChat turns this iPhone into a local server so nearby phones and laptops can join the chat without internet. It only talks to devices on your own Wi-Fi / hotspot network.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_airchat-http._tcp</string>
+		<string>_airchat-http._udp</string>
+		<string>_airchat-mesh._tcp</string>
+	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used for the hold-to-record walkie-talkie voice notes.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Used to take a photo to send in the chat.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>AirChat needs a photo only when you tap the image button, and it never reads the rest of your library (PHPicker).</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needed for the "Find my friend" compass and to share your position with the room.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Used to keep the compass pointing at true north and to detect BUZZ shakes.</string>
+
+	<!-- ============ BACKGROUND SERVER (iOS-specific workaround) ============ -->
+	<!-- iOS suspends an app the moment it is backgrounded, which would kill the
+	     HTTP/WebSocket listener. A silent .playback audio session is what keeps the
+	     iPhone serving while the screen is locked or the app is in the background.
+	     See Sources/Host/KeepAlive.swift. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>processing</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>SplashLogo</string>
+		<key>UIColorName</key>
+		<string>SplashBackground</string>
+	</dict>
+
+	<!-- AirChat talks plain HTTP to devices on the LAN, so App Transport Security
+	     has to allow cleartext + local networking (mirrors Android's
+	     network_security_config.xml / usesCleartextTraffic). -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Any</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+</dict>
+</plist>
