@@ -84,6 +84,14 @@ final class ViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleJoinRoom(_:)),
                                                name: .airchatJoinRoom, object: nil)
+
+        // A deep link may have arrived before the view was ready; pick it up now.
+        if let url = AppDelegate.pendingJoinURL {
+            AppDelegate.pendingJoinURL = nil
+            if let info = AppDelegate.joinInfo(from: url) {
+                handleJoinInfo(info)
+            }
+        }
     }
 
     deinit {
@@ -522,11 +530,16 @@ final class ViewController: UIViewController {
     // MARK: - Deep link
 
     @objc private func handleJoinRoom(_ notification: Notification) {
-        guard let info = notification.userInfo,
-              let host = info["host"] as? String,
+        guard let info = notification.userInfo else { return }
+        handleJoinInfo(info)
+    }
+
+    private func handleJoinInfo(_ info: [AnyHashable: Any]) {
+        guard let host = info["host"] as? String,
               let port = info["port"] as? Int,
-              let code = info["code"] as? String else { return }
-        webView.load(URLRequest(url: URL(string: "http://\(host):\(port)/\(code)")!))
+              let code = info["code"] as? String,
+              let url = URL(string: "http://\(host):\(port)/\(code)") else { return }
+        webView.load(URLRequest(url: url))
     }
 
     // MARK: - Toast

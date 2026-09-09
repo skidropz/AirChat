@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		AC0000000000000000000021 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000011 /* AppDelegate.swift */; };
 		AC0000000000000000000022 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000012 /* ViewController.swift */; };
-		AC0000000000000000000029 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000019 /* SceneDelegate.swift */; };
+		AC0000000000000000000029 /* AirChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000019 /* AirChatApp.swift */; };
 		AC0000000000000000000023 /* LocalServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000013 /* LocalServer.swift */; };
 		AC0000000000000000000024 /* MeshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000014 /* MeshManager.swift */; };
 		AC0000000000000000000025 /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000015 /* NativeBridge.swift */; };
@@ -20,7 +20,7 @@
 /* Begin PBXFileReference section */
 		AC0000000000000000000006 /* AirChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC0000000000000000000011 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AC0000000000000000000019 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		AC0000000000000000000019 /* AirChatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirChatApp.swift; sourceTree = "<group>"; };
 		AC0000000000000000000012 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		AC0000000000000000000013 /* LocalServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServer.swift; sourceTree = "<group>"; };
 		AC0000000000000000000014 /* MeshManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshManager.swift; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				AC0000000000000000000011 /* AppDelegate.swift */,
-				AC0000000000000000000019 /* SceneDelegate.swift */,
+				AC0000000000000000000019 /* AirChatApp.swift */,
 				AC0000000000000000000012 /* ViewController.swift */,
 				AC0000000000000000000013 /* LocalServer.swift */,
 				AC0000000000000000000014 /* MeshManager.swift */,
@@ -166,7 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC0000000000000000000021 /* AppDelegate.swift in Sources */,
-				AC0000000000000000000029 /* SceneDelegate.swift in Sources */,
+				AC0000000000000000000029 /* AirChatApp.swift in Sources */,
 				AC0000000000000000000022 /* ViewController.swift in Sources */,
 				AC0000000000000000000023 /* LocalServer.swift in Sources */,
 				AC0000000000000000000024 /* MeshManager.swift in Sources */,
