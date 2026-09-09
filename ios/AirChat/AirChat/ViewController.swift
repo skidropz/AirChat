@@ -278,7 +278,7 @@ final class ViewController: UIViewController {
             "port": String(port).data(using: .utf8) ?? Data(),
             "v": "1".data(using: .utf8) ?? Data()
         ]
-        service.setTXTRecord(txtRecord)
+        service.setTXTRecord(NetService.data(fromTXTRecord: txtRecord))
         service.delegate = self
         service.publish()
         netService = service
