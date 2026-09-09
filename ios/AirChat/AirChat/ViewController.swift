@@ -38,6 +38,7 @@ final class ViewController: UIViewController {
     private var hapticEngine: CHHapticEngine?
     private var recorder: AVAudioRecorder?
     private var recordingURL: URL?
+    private let audioQueue = DispatchQueue(label: "com.skidropz.airchat.audio")
 
     // MARK: - State
     private var roomKey = ""
@@ -379,47 +380,59 @@ final class ViewController: UIViewController {
     // MARK: - Recording
 
     func startRecording(completion: @escaping (Bool) -> Void) {
+        // AVAudioSession setCategory/setActive can block the main thread; do that part on a
+        // background queue. Recorder state stays on the main thread.
+        let start = { [weak self] in self?.beginRecording(completion: completion) }
+
         if #available(iOS 17.0, *) {
             switch AVAudioApplication.shared.recordPermission {
-            case .granted: completion(beginRecording())
-            case .denied: completion(false)
+            case .granted: start()
+            case .denied: DispatchQueue.main.async { completion(false) }
             case .undetermined:
                 AVAudioApplication.requestRecordPermission { granted in
-                    DispatchQueue.main.async { completion(granted ? self.beginRecording() : false) }
+                    granted ? start() : DispatchQueue.main.async { completion(false) }
                 }
-            @unknown default: completion(false)
+            @unknown default: DispatchQueue.main.async { completion(false) }
             }
         } else {
             switch AVAudioSession.sharedInstance().recordPermission {
-            case .granted: completion(beginRecording())
-            case .denied: completion(false)
+            case .granted: start()
+            case .denied: DispatchQueue.main.async { completion(false) }
             case .undetermined:
                 AVAudioSession.sharedInstance().requestRecordPermission { granted in
-                    DispatchQueue.main.async { completion(granted ? self.beginRecording() : false) }
+                    granted ? start() : DispatchQueue.main.async { completion(false) }
                 }
-            @unknown default: completion(false)
+            @unknown default: DispatchQueue.main.async { completion(false) }
             }
         }
     }
 
-    private func beginRecording() -> Bool {
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
-        try? session.setActive(true)
+    private func beginRecording(completion: @escaping (Bool) -> Void) {
+        audioQueue.async { [weak self] in
+            let session = AVAudioSession.sharedInstance()
+            try? session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
+            try? session.setActive(true)
 
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("airchat-\(UUID().uuidString).m4a")
-        let settings: [String: Any] = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 44100,
-            AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-        ]
-        guard let rec = try? AVAudioRecorder(url: url, settings: settings) else { return false }
-        rec.record()
-        recorder = rec
-        recordingURL = url
-        return true
+            DispatchQueue.main.async {
+                guard let self = self else { completion(false); return }
+                let url = FileManager.default.temporaryDirectory
+                    .appendingPathComponent("airchat-\(UUID().uuidString).m4a")
+                let settings: [String: Any] = [
+                    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                    AVSampleRateKey: 44100,
+                    AVNumberOfChannelsKey: 1,
+                    AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+                ]
+                guard let rec = try? AVAudioRecorder(url: url, settings: settings) else {
+                    completion(false)
+                    return
+                }
+                rec.record()
+                self.recorder = rec
+                self.recordingURL = url
+                completion(true)
+            }
+        }
     }
 
     func stopRecording() {
@@ -428,7 +441,10 @@ final class ViewController: UIViewController {
         recorder.stop()
         self.recorder = nil
         self.recordingURL = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+
+        audioQueue.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
 
         if let url = url, let data = try? Data(contentsOf: url) {
             let dataUrl = "data:audio/m4a;base64," + data.base64EncodedString()
@@ -443,7 +459,10 @@ final class ViewController: UIViewController {
         recorder.stop()
         self.recorder = nil
         self.recordingURL = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+
+        audioQueue.async {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
         if let url = url { try? FileManager.default.removeItem(at: url) }
     }
 

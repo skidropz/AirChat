@@ -15,28 +15,34 @@ import AVFoundation
 final class BackgroundKeepAlive {
 
     private var player: AVAudioPlayer?
+    private let queue = DispatchQueue(label: "com.skidropz.airchat.keepalive")
     private(set) var isEnabled = false
 
     func start() {
         stop()
 
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
-        try? session.setActive(true)
+        // setCategory/setActive can block; run off the main thread.
+        queue.async { [weak self] in
+            let session = AVAudioSession.sharedInstance()
+            try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
+            try? session.setActive(true)
 
-        guard let player = try? AVAudioPlayer(data: Self.silentWAVData()) else { return }
-        player.numberOfLoops = -1
-        player.volume = 0.0
-        player.prepareToPlay()
-        player.play()
-        self.player = player
-        isEnabled = true
+            guard let player = try? AVAudioPlayer(data: Self.silentWAVData()) else { return }
+            player.numberOfLoops = -1
+            player.volume = 0.0
+            player.prepareToPlay()
+            player.play()
+            self?.player = player
+            self?.isEnabled = true
+        }
     }
 
     func stop() {
-        player?.stop()
-        player = nil
-        isEnabled = false
+        queue.async { [weak self] in
+            self?.player?.stop()
+            self?.player = nil
+            self?.isEnabled = false
+        }
     }
 
     /// A tiny (1 second) silent 44.1kHz mono 16-bit PCM WAV, looped with volume 0.

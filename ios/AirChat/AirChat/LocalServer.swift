@@ -370,7 +370,9 @@ private final class WebSocketPeer {
     }
 
     func start() {
-        connection.start(queue: queue)
+        // The connection was already started (on this queue) when the HTTP handshake was
+        // read in LocalServer.handleConnection; calling start() again would hit
+        // "nw_connection_set_queue called after nw_connection_start".
         receiveLoop()
     }
 
