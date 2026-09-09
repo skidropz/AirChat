@@ -1,0 +1,38 @@
+# Builds the unsigned AirChat.ipa on a macOS runner and uploads it as an artifact.
+#
+# To enable:  git mv ios/ci/ios-ipa.yml .github/workflows/
+# (keep it in ios/ci/ while disabled so it doesn't run on every fork).
+#
+# The output (AirChat-unsigned.ipa) is unsigned — sign it with Sideloadly / AltStore /
+# SideStore using a free Apple ID, or install with TrollStore.
+
+name: iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'app/src/main/assets/**'
+      - '.github/workflows/ios-ipa.yml'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Build unsigned IPA
+        run: ./ios/AirChat/scripts/build_ipa.sh
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AirChat-unsigned
+          path: ios/AirChat/build/AirChat-unsigned.ipa
+          if-no-files-found: error
