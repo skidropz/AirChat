@@ -112,7 +112,7 @@ final class MeshManager: NSObject {
     // MARK: - Sending
 
     func sendMessage(_ jsonStr: String) {
-        guard let session = session else { return }
+        guard session != nil else { return }
         var dict: [String: Any]
         if let data = jsonStr.data(using: .utf8),
            let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {

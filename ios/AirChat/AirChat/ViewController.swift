@@ -273,9 +273,12 @@ final class ViewController: UIViewController {
         guard bonjourEnabled else { return }
         let service = NetService(domain: "local.", type: "_airchat-http._tcp",
                                  name: "AirChat-\(shortCode)", port: Int32(port))
-        service.setTXTRecordData(NetService.data(fromTXTRecord: [
-            "code": shortCode, "port": String(port), "v": "1"
-        ]))
+        let txtRecord: [String: Data] = [
+            "code": shortCode.data(using: .utf8) ?? Data(),
+            "port": String(port).data(using: .utf8) ?? Data(),
+            "v": "1".data(using: .utf8) ?? Data()
+        ]
+        service.setTXTRecordData(NetService.data(fromTXTRecord: txtRecord))
         service.delegate = self
         service.publish()
         netService = service
@@ -295,8 +298,9 @@ final class ViewController: UIViewController {
 
     private func handleResolvedService(_ service: NetService) {
         guard let host = ipAddress(from: service) else { return }
-        let txt = NetService.dictionary(fromTXTRecord: service.txtRecordData())
-        let code = txt["code"] ?? ""
+        guard let txtData = service.txtRecordData() else { return }
+        let txt = NetService.dictionary(fromTXTRecord: txtData)
+        let code = txt["code"].flatMap { String(data: $0, encoding: .utf8) } ?? ""
         let room = NearbyRoom(name: service.name, host: host, port: Int(service.port), code: code)
         if !nearbyRooms.contains(where: { $0.host == host && $0.port == room.port }) {
             nearbyRooms.append(room)
@@ -308,7 +312,7 @@ final class ViewController: UIViewController {
 
     private func ipAddress(from service: NetService) -> String? {
         guard let addresses = service.addresses else { return nil }
-        for case let data as Data in addresses {
+        for data in addresses {
             var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
             data.withUnsafeBytes { raw in
                 guard let ptr = raw.baseAddress?.assumingMemoryBound(to: sockaddr.self) else { return }
